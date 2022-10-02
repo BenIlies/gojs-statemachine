@@ -68,8 +68,14 @@ export class DiagramComponent implements OnInit {
     var fromNode = adornment.adornedPart;
     var fromData = fromNode.data;
     // create a new "State" data object, positioned off to the right of the adorned Node
-    let node_category = fromData.category == "state" ? "event" : "state"
-    var toData = { name: "new event", loc: "", category: node_category };
+    let node_category  = "state"
+    let node_label = "New State"
+    if (fromData.category == "state" ){
+
+       node_category = "event"
+       node_label =  "New Event"
+    }
+    var toData = { name: node_label, loc: "", category: node_category };
     var p = fromNode.location.copy();
     p.x += 200;
     toData.loc = go.Point.stringify(p);  // the "loc" property is a string, not a Point object
@@ -84,7 +90,11 @@ export class DiagramComponent implements OnInit {
       text: "transition"
     };
     // and add the link data to the model
-    model.addLinkData(linkdata);
+
+    if (fromData.category == "state") {
+        model.addLinkData(linkdata);
+    }
+
 
     // select the new Node
     var newnode = diagram.findNodeForData(toData);
@@ -247,7 +257,7 @@ export class DiagramComponent implements OnInit {
     // for the default category, "", use the same template that Diagrams use by default;
     // this just shows the key value as a simple TextBlock
     default_node_temp.selectionAdornmentTemplate = select_abn_temp;
-    // event_node_temp.selectionAdornmentTemplate = select_abn_temp;
+    event_node_temp.selectionAdornmentTemplate = select_abn_temp;
 
     templmap.add("", <go.Node>this.diagram.nodeTemplate);
 
