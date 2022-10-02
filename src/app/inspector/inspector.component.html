@@ -1,0 +1,17 @@
+
+
+<form *ngIf="selectedNode" (ngSubmit)="onCommitForm()">
+  <div class="form-group">
+    <label >Name</label>
+    <input type="text" class="form-control" name="name" placeholder="Enter Name" [(ngModel)]="data.name">
+  </div>
+
+  <div class="form-group">
+    <label >Example multiple select</label>
+    <select multiple class="form-control" name="actions" ngModel size="5" [(ngModel)]="selectedActions">
+      <option *ngFor="let action of actions" [value]="action"> {{ action.name }} </option>
+    </select>
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
