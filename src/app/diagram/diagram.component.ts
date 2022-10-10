@@ -4,6 +4,7 @@ import { DOCUMENT } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+
 const $ = go.GraphObject.make;
 
 const entryTemplate =
@@ -48,6 +49,9 @@ export class DiagramComponent implements OnInit {
   }
   @Output()
   public nodeClicked = new EventEmitter();
+
+  @Output()
+  public modelChanges = new EventEmitter();
 
   public document: any;
 
@@ -140,7 +144,7 @@ export class DiagramComponent implements OnInit {
     $(go.Panel, "Auto",
       $(go.Shape,
         {
-          fill: "#BDDDD8",
+          fill: "#fafdff",
           strokeWidth: 0.5,
           fromLinkable: true,
           fromLinkableDuplicates: true,
@@ -208,6 +212,16 @@ export class DiagramComponent implements OnInit {
                 editable: true,
               },
               new go.Binding("text", "name").makeTwoWay())
+          ),
+          $(go.Panel, "Vertical",
+            {
+              row: 1,
+              stretch: go.GraphObject.Horizontal,
+              defaultStretch: go.GraphObject.Horizontal,
+              itemTemplate: this.eventTemplate,
+
+            },
+            new go.Binding("itemArray", "entries"),
           )
         )
       );
@@ -220,7 +234,7 @@ export class DiagramComponent implements OnInit {
             { stretch: go.GraphObject.Horizontal },
             $(go.Shape,
               {
-                fill: "#db5481",
+                fill: "#99a1ad",
                 strokeWidth: 0.5,
                 portId: "",
                 toLinkable: true,
@@ -229,7 +243,7 @@ export class DiagramComponent implements OnInit {
             $(go.TextBlock,
               {
                 margin: new go.Margin(2, 4, 0, 4),
-                stroke: "white",
+                stroke: "black",
                 font: "bold 10pt sans-serif",
                 isMultiline: false,
                 editable: true,
@@ -496,7 +510,17 @@ export class DiagramComponent implements OnInit {
       for (var key in json_data) {
         // json_node =
         // console.log(key)
-        let temp_node = { key: key, name: key, category: "state" }
+        let entries = []
+        if(Object.prototype.toString.call(json_data[key]["entry"]) === '[object Array]') {
+          for (let e in json_data[key]["entry"]){
+            entries.push({name: json_data[key]["entry"][e]})
+          }
+        }
+        else{
+          entries.push({name: json_data[key]["entry"]})
+        }
+
+        let temp_node = { key: key, name: key, category: "state", entries: entries}
         mynodeDataArray.push(temp_node)
 
         for (var event in json_data[key]["on"]) {
@@ -535,6 +559,7 @@ export class DiagramComponent implements OnInit {
       );
 
       this.set_model(this.model)
+      this.modelChanges.emit(this.model)
     });
 
 

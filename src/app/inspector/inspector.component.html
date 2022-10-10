@@ -4,14 +4,20 @@
   <div class="form-group">
     <label >Name</label>
     <input type="text" class="form-control" name="name" placeholder="Enter Name" [(ngModel)]="data.name">
+    <label >type</label>
+    <input type="text" class="form-control" name="category" placeholder="Enter Name" [(ngModel)]="data.category">
+
   </div>
 
   <div class="form-group">
-    <label >Example multiple select</label>
+    <label >Select Entries</label>
     <select multiple class="form-control" name="actions" ngModel size="5" [(ngModel)]="selectedActions">
       <option *ngFor="let action of actions" [value]="action"> {{ action.name }} </option>
+      <option ng-blur="addItem()"><input type="text" placeholder="Write your own" id="newItem"></option>
     </select>
+
   </div>
+  <br>
   <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 

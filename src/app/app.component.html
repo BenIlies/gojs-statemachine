@@ -1,2 +1,7 @@
-<app-diagram #diagram style="float: left;" [model]='model' (nodeClicked)="setSelectedNode($event)"></app-diagram>
-<app-inspector style="float: left;" [selectedNode]="selectedNode" [model]="model"></app-inspector>
+
+<br>
+
+    <app-diagram #diagram style="float: left;" [model]='model' (nodeClicked)="setSelectedNode($event)" (modelChanges)="setModel($event)"></app-diagram>
+  <app-inspector style="float: left; margin-left: 15px;" [selectedNode]="selectedNode" [model]="model"></app-inspector>
+
+

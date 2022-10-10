@@ -48,6 +48,10 @@ export class AppComponent {
     this.selectedNode = node;
   }
 
+  setModel(model:any){
+    this.model = model;
+  }
+
   public getJSON(file: string): Observable<any> {
     return this.http.get(file);
   }
