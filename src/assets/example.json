@@ -1,0 +1,89 @@
+{
+  "id": "THREE_WAY_HANDSHAKE",
+  "initial": "INITIALIZING",
+  "states": {
+    "INITIALIZING": {
+      "on": {
+        "STARTED": [
+          {
+            "cond": "equal role client",
+            "target": "SENDING SYN"
+          },
+          {
+            "cond": "equal role server",
+            "target": "LISTENING"
+          }
+        ]
+      }
+    },
+    "SENDING SYN": {
+      "entry": "send pkt",
+      "on": {
+        "PACKET_SENT": {
+          "target": "LISTENING"
+        }
+      }
+    },
+    "LISTENING": {
+      "entry": "handle_packets timeout",
+      "on": {
+        "SYN_RECEIVED": {
+          "target": "HANDLING_SYN"
+        },
+        "ACK_RECEIVED": {
+          "target": "HANDLING_ACK"
+        },
+        "SYN_ACK_RECEIVED": {
+          "target": "HANDLING_SYN_ACK"
+        },
+        "TIMEOUT": {
+          "target": "ENDING"
+        }
+      }
+    },
+    "HANDLING_SYN": {
+      "entry": [
+        "get_packet_IP client_ip ans",
+        "set_IP_dst pkt client_ip",
+        "get_packet_port client_port ans",
+        "set_TCP_dport pkt client_port",
+        "set_TCP_automatic_packet_seq pkt",
+        "set_TCP_automatic_packet_ack pkt ans",
+        "set_TCP_flags pkt syn/ack",
+        "pop ans",
+        "send pkt"
+      ],
+      "on": {
+        "PACKET_SENT": {
+          "target": "LISTENING"
+        }
+      }
+    },
+    "HANDLING_ACK": {
+      "entry": [
+        "pop ans",
+        "done"
+      ],
+      "on": {
+        "DONE": {
+          "target": "ENDING"
+        }
+      }
+    },
+    "HANDLING_SYN_ACK": {
+      "entry": [
+        "set_TCP_automatic_packet_seq pkt",
+        "set_TCP_automatic_packet_ack pkt ans",
+        "set_TCP_flags pkt ack",
+        "pop ans",
+        "send pkt"
+      ],
+      "on": {
+        "PACKET_SENT": {
+          "target": "ENDING"
+        }
+      }
+    },
+    "ENDING": {}
+  }
+}
