@@ -455,8 +455,17 @@ export class DiagramComponent implements OnInit {
 
 
     for (let item of model_data["nodeDataArray"]){
+      let entries = []
       if (item['category'] == 'state'){
-        json_obj.states[item['name']] = {on: {}}
+
+        console.log("entriees")
+
+        for (let e of item['entries']){
+        console.log(e['name'])
+
+          entries.push(e["name"])
+        }
+        json_obj.states[item['name']] = {entry: entries, on: {}}
       }
     }
     for (let item of model_data["nodeDataArray"]){

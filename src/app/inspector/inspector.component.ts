@@ -15,6 +15,8 @@ export class InspectorComponent implements OnInit {
     events: [],
     entries: []
   }
+
+  public input_type= ""
   @Input()
   public model!: go.Model;
   @Input()
@@ -26,6 +28,11 @@ export class InspectorComponent implements OnInit {
       this._selectedNode = node;
       this.data.name = this._selectedNode.data.name;
       this.data.category = this._selectedNode.data.category;
+      if(this.data.category == "event"){
+        this.input_type = "events"
+      }else{
+        this.input_type = "entries"
+      }
       this.data.events = this._selectedNode.data.events;
       this.data.entries = this._selectedNode.data.entries;
     } else {

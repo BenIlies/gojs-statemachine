@@ -10,7 +10,7 @@
   </div>
 
   <div class="form-group">
-    <label >Select Entries</label>
+    <label >Select {{input_type}} </label>
     <select multiple class="form-control" name="actions" ngModel size="5" [(ngModel)]="selectedActions">
       <option *ngFor="let action of actions" [value]="action"> {{ action.name }} </option>
       <option ng-blur="addItem()"><input type="text" placeholder="Write your own" id="newItem"></option>

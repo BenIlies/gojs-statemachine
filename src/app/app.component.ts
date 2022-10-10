@@ -22,8 +22,8 @@ export class AppComponent {
       // identifies data property names
       nodeDataArray: [
         { name: "START", category: "state", events: [{ pid: "a1", name: "listen", condition: "condition:", target: "target" }] },
-        { name: "Event", category: "event", conditions: [{ pid: "a2", name: "wait", condition: "condition:", target: "target" }, { pid: "b2", name: "send", condition: "condition:", target: "target" }] },
-        { name: "FINISH", category: "event", events: [{ pid: "a3", name: "send", condition: "condition:", target: "target" }], entries: [{ pid: "e1", name: "do_somthing", condition: "condition:", target: "target" }] },
+        // { name: "Event", category: "event", conditions: [{ pid: "a2", name: "wait", condition: "condition:", target: "target" }, { pid: "b2", name: "send", condition: "condition:", target: "target" }] },
+        // { name: "FINISH", category: "event", events: [{ pid: "a3", name: "send", condition: "condition:", target: "target" }], entries: [{ pid: "e1", name: "do_somthing", condition: "condition:", target: "target" }] },
 
       ],
       linkDataArray: [
