@@ -11,6 +11,11 @@ import { DiagramComponent } from './diagram/diagram.component';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  status: boolean = false;
+  clickEvent(){
+      this.status = !this.status;
+  }
+
   title = 'angular-gojs';
 
   @ViewChild('diagram') diagram:DiagramComponent;

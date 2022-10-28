@@ -172,6 +172,7 @@ export class DiagramComponent implements OnInit {
         "linkingTool.direction": go.LinkingTool.ForwardsOnly,
         "draggingTool.isGridSnapEnabled": true,
         "undoManager.isEnabled": true,
+
         layout: new go.ForceDirectedLayout()
       });
 
@@ -238,6 +239,7 @@ export class DiagramComponent implements OnInit {
                 strokeWidth: 0.5,
                 portId: "",
                 toLinkable: true,
+                toLinkableDuplicates: false,
                 toSpot: go.Spot.LeftRightSides
               }),
             $(go.TextBlock,
