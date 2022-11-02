@@ -1,32 +1,51 @@
 {
-  "id": "THREE_WAY_HANDSHAKE",
-  "initial": "INITIALIZING",
   "states": {
     "INITIALIZING": {
+      "entry": [
+        null
+      ],
       "on": {
+        "locations": {
+          "STARTED": "196.99999999999994 339.71108398437497"
+        },
         "STARTED": [
           {
-            "cond": "equal role client",
+            "cond": "",
             "target": "SENDING SYN"
           },
           {
-            "cond": "equal role server",
+            "cond": "",
             "target": "LISTENING"
           }
         ]
-      }
+      },
+      "loc": "0 329.76142374915395"
     },
     "SENDING SYN": {
-      "entry": "send pkt",
+      "entry": [
+        "send pkt"
+      ],
       "on": {
+        "locations": {
+          "PACKET_SENT": "600.5228474983077 325"
+        },
         "PACKET_SENT": {
           "target": "LISTENING"
         }
-      }
+      },
+      "loc": "403.5228474983078 329.76142374915395"
     },
     "LISTENING": {
-      "entry": "handle_packets timeout",
+      "entry": [
+        "handle_packets timeout"
+      ],
       "on": {
+        "locations": {
+          "SYN_RECEIVED": "1004.0456949966157 100",
+          "ACK_RECEIVED": "1004.0456949966157 300",
+          "SYN_ACK_RECEIVED": "1004.0456949966157 400",
+          "TIMEOUT": "1498.7482299949238 525"
+        },
         "SYN_RECEIVED": {
           "target": "HANDLING_SYN"
         },
@@ -39,7 +58,8 @@
         "TIMEOUT": {
           "target": "ENDING"
         }
-      }
+      },
+      "loc": "807.0456949966157 379.76142374915395"
     },
     "HANDLING_SYN": {
       "entry": [
@@ -54,10 +74,14 @@
         "send pkt"
       ],
       "on": {
+        "locations": {
+          "PACKET_SENT": "1498.7482299949238 0"
+        },
         "PACKET_SENT": {
           "target": "LISTENING"
         }
-      }
+      },
+      "loc": "1210.5685424949238 22.450095624153953"
     },
     "HANDLING_ACK": {
       "entry": [
@@ -65,10 +89,14 @@
         "done"
       ],
       "on": {
+        "locations": {
+          "DONE": "1498.7482299949238 325"
+        },
         "DONE": {
           "target": "ENDING"
         }
-      }
+      },
+      "loc": "1256.1583862449238 294.47250773352897"
     },
     "HANDLING_SYN_ACK": {
       "entry": [
@@ -79,11 +107,24 @@
         "send pkt"
       ],
       "on": {
+        "locations": {
+          "PACKET_SENT": "1498.7482299949238 400"
+        },
         "PACKET_SENT": {
           "target": "ENDING"
         }
-      }
+      },
+      "loc": "1210.5685424949238 413.605759686654"
     },
-    "ENDING": {}
-  }
+    "ENDING": {
+      "entry": [
+        null
+      ],
+      "on": {
+        "locations": {}
+      },
+      "loc": "1705.2710774932316 404.76142374915395"
+    }
+  },
+  "id": "THREE_WAY_HANDSHAKE"
 }

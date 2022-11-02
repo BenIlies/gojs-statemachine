@@ -1,5 +1,6 @@
 import { DOCUMENT } from '@angular/common';
 import { Component, Inject, Input, OnInit } from '@angular/core';
+import { ManagerService } from '../manager.service';
 
 @Component({
   selector: 'app-inspector',
@@ -13,7 +14,8 @@ export class InspectorComponent implements OnInit {
     name: null,
     category: "state",
     events: [],
-    entries: []
+    entries: [],
+    loc: ""
   }
 
   public input_type= ""
@@ -28,10 +30,15 @@ export class InspectorComponent implements OnInit {
       this._selectedNode = node;
       this.data.name = this._selectedNode.data.name;
       this.data.category = this._selectedNode.data.category;
+      this.data.loc = this._selectedNode.data.loc;
+
       if(this.data.category == "event"){
         this.input_type = "events"
+        this.actions = this._selectedNode.data.events;
       }else{
         this.input_type = "entries"
+        this.actions = this._selectedNode.data.entries;
+
       }
       this.data.events = this._selectedNode.data.events;
       this.data.entries = this._selectedNode.data.entries;
@@ -49,8 +56,15 @@ export class InspectorComponent implements OnInit {
   public selectedActions = []
 
   public document: any;
-  constructor(@Inject(DOCUMENT) document: Document) {
+  constructor(@Inject(DOCUMENT) document: Document, private ModelManager:ManagerService) {
     this.document = document;
+
+    this.ModelManager.model$.subscribe(
+      data => {
+        this.model = data
+      });
+
+
    }
 
 
@@ -58,23 +72,37 @@ export class InspectorComponent implements OnInit {
 
   }
 
+  ngAfterViewInit(): void {
+    this.ModelManager.model$.subscribe(
+      data => {
+        this.model = data
+      });
+  }
+
   onCommitForm(){
     console.log('form submitted baby')
+    console.log(this.model.name)
     this.model.startTransaction();
     this.model.set(this.selectedNode.data, "name", this.data.name)
     this.model.set(this.selectedNode.data, "category", this.data.category)
     this.model.set(this.selectedNode.data, "events", this.selectedActions)
-    this.model.set(this.selectedNode.data, "entries", this.selectedActions)
-    this.model.set(this.selectedNode.data, "events", this.selectedActions)
+    this.model.set(this.selectedNode.data, "location", this.data.loc)
+    this.model.set(this.selectedNode.data, "entries", this.data.entries)
+
+
     this.model.commitTransaction()
   }
 
-  addItem () {
-    this.actions.push({pid: this.document.getElementById("newItem").value, name: this.document.getElementById("newItem").value, condition: "condition:", target: "target"});
-}
+//   addItem () {
+//     this.data.entries.push({pid: this.document.getElementById("newItem").value, name: this.document.getElementById("newItem").value, condition: "condition:", target: "target"});
+// }
 
   update_model(model: any){
     this.model = model
+  }
+
+  get_data(){
+    return JSON.stringify(this.data, null, 2)
   }
 
 }

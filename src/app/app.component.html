@@ -7,10 +7,23 @@
   <div class="bg-light border-right" id="sidebar-wrapper" [ngClass]="status ? 'hide' : 'show'">
     <div class="sidebar-heading">State Charts </div>
     <div class="list-group list-group-flush">
-      <a href="#" class="list-group-item list-group-item-action bg-light">FTP</a>
-      <a href="#" class="list-group-item list-group-item-action bg-light">3 Way Handshake</a>
+
+      <a href="#" *ngFor="let _model of this.model_list let i = index"
+        class="list-group-item list-group-item-action bg-light" (click)="this.select(i)">{{_model["name"]}}</a>
+      <button class="btn btn-secondary" *ngIf="new_model_toggle" (click)="new_model_toggle=!new_model_toggle">new
+        model</button>
 
     </div>
+    <form class="center" *ngIf="!new_model_toggle"  (ngSubmit)="onCommitNewModelForm()">
+
+    <div class=" form-group">
+          <label>Name</label>
+          <input type="text" class="form-control" name="name" placeholder="Enter model name" [(ngModel)]="new_model_name">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+
+  </form>
+
   </div>
   <!-- /#sidebar-wrapper -->
 
@@ -21,12 +34,14 @@
     <button style=" width: 30px; height: 100%; float:left; padding: 0; border-radius: 0px; background-color: #dce6e6;"
       class="btn" (click)="clickEvent()"><span class="virt_text">toggle menu</span></button>
 
-    <div class="container-fluid">
+    <div class="container-fluid" style="position: relative;">
 
-      <app-diagram #diagram style="float: left; height: 800px; width: 75%;" [model]='model' (nodeClicked)="setSelectedNode($event)"
-        (modelChanges)="setModel($event)"></app-diagram>
+      <app-diagram #diagram style="float: left; height: 600px; width: 95%;" [model]='model'
+        (nodeClicked)="setSelectedNode($event)" (modelChanges)="setModel($event)"></app-diagram>
 
-      <app-inspector style="float: left; margin-left: 15px; width: 300px" [selectedNode]="selectedNode" [model]="model">
+      <app-inspector
+        style="float: left; margin-left: 15px; height: 100vh; width: 300px; position: absolute; right: 0px;  z-index: 10;"
+        [selectedNode]="selectedNode" [model]="model">
       </app-inspector>
 
 

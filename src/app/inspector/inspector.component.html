@@ -1,23 +1,38 @@
 
+<div *ngIf="selectedNode" class="container" style="background-color: gray; height: 100%;">
 
-<form *ngIf="selectedNode" (ngSubmit)="onCommitForm()">
-  <div class="form-group">
-    <label >Name</label>
-    <input type="text" class="form-control" name="name" placeholder="Enter Name" [(ngModel)]="data.name">
-    <label >type</label>
-    <input type="text" class="form-control" name="category" placeholder="Enter Name" [(ngModel)]="data.category">
+  <form  (ngSubmit)="onCommitForm()">
+    <div class="form-group">
+      <label >Name</label>
+      <input type="text" class="form-control" name="name" placeholder="Enter Name" [(ngModel)]="data.name">
+      <label >type</label>
+      <input type="text" class="form-control" name="category" placeholder="Enter Name" [(ngModel)]="data.category">
+      <label >location</label>
+      <input type="text" class="form-control" name="location" placeholder="Enter location" [(ngModel)]="data.loc">
 
+    </div>
+
+    <div class="form-group">
+      <label >Select {{input_type}} </label>
+
+      <select *ngIf="data.category == 'state'" multiple class="form-control" name="actions" ngModel size="5" [(ngModel)]="data.entries">
+        <option *ngFor="let action of data.entries" [value]="action"> {{ action["name"] }} </option>
+        <option ng-blur="addItem()"><input type="text" placeholder="Write your own" id="newItem"></option>
+      </select>
+      <select *ngIf="data.category == 'event'" multiple class="form-control" name="actions" ngModel size="5" [(ngModel)]="data.events">
+        <option *ngFor="let action of data.events" [value]="action"> {{ action["name"] }} </option>
+        <option ng-blur="addItem()"><input type="text" placeholder="Write your own" id="newItem"></option>
+      </select>
+
+    </div>
+    <br>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+
+  <div>
+    {{get_data()}}
   </div>
 
-  <div class="form-group">
-    <label >Select {{input_type}} </label>
-    <select multiple class="form-control" name="actions" ngModel size="5" [(ngModel)]="selectedActions">
-      <option *ngFor="let action of actions" [value]="action"> {{ action.name }} </option>
-      <option ng-blur="addItem()"><input type="text" placeholder="Write your own" id="newItem"></option>
-    </select>
+</div>
 
-  </div>
-  <br>
-  <button type="submit" class="btn btn-primary">Submit</button>
-</form>
 

@@ -35,6 +35,13 @@ body {
   transform: rotate(180deg);
 }
 
+.center {
+  margin: auto;
+  width: 90%;
+
+  padding: 15px;
+}
+
 @media (min-width: 768px) {
   #sidebar-wrapper {
     margin-left: 0;
