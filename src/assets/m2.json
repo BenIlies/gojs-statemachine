@@ -1,0 +1,141 @@
+{
+  "states": {
+    "INITIALIZING": {
+      "entry": [
+        null
+      ],
+      "on": {
+        "locations": {
+          "STARTED": "2150 -260"
+        },
+        "STARTED": {
+          "target": "DEFINING_TIMEOUT_TARGET"
+        }
+      },
+      "loc": "1950 -250"
+    },
+    "HANDLING_SYN": {
+      "entry": [
+        "trigger (event)"
+      ],
+      "on": {
+        "locations": {
+          "SYN_HANDLED": "2512.0287679229205 0"
+        },
+        "SYN_HANDLED": {
+          "target": "GETTING_REMOTE_RECEIVED"
+        }
+      },
+      "loc": "2078.6274007354205 19.47250773352897"
+    },
+    "ENDING": {
+      "entry": [
+        "return (result)"
+      ],
+      "on": {
+        "locations": {}
+      },
+      "loc": "3460 280"
+    },
+    "GETTING_REMOTE_RECEIVED": {
+      "entry": [
+        "call (REMOTE_RECEIVED_GETTER ctrl_channel local_received local_seq) (event remote_received remote_seq)",
+        "trigger (event)"
+      ],
+      "on": {
+        "locations": {
+          "REQUEST DONE": "3430.818216983728 0"
+        },
+        "REQUEST DONE": {
+          "target": "SETTING_RESULT"
+        }
+      },
+      "loc": "2718.5516154212282 19.472507733528914"
+    },
+    "SETTING_RESULT": {
+      "entry": [
+        "call (SET_RESULT local_received  remote_received local_seq remote_seq) (event result)"
+      ],
+      "on": {
+        "locations": {
+          "RESULT_SET": "2510 270"
+        },
+        "RESULT_SET": {
+          "target": "DISCONNECTING_CONTROL_CHANNEL"
+        }
+      },
+      "loc": "1880 100"
+    },
+    "DEFINING_TIMEOUT_TARGET": {
+      "entry": [
+        "redirect (\"TIMEOUT\" \"ERROR\")",
+        "done"
+      ],
+      "on": {
+        "locations": {
+          "DONE": "2600 -260"
+        },
+        "DONE": {
+          "target": "SETTING_UP_CONTROL_CHANNEL"
+        }
+      },
+      "loc": "2350 -240"
+    },
+    "SETTING_UP_CONTROL_CHANNEL": {
+      "entry": [
+        "call (CONTROL_CHANNEL_SET_UP) (event ctrl_channel)",
+        "trigger (event)"
+      ],
+      "on": {
+        "locations": {
+          "CONTROL_CHANNEL_READY": "3200 -260"
+        },
+        "CONTROL_CHANNEL_READY": {
+          "target": "SETTING_UP_VARIABLES"
+        }
+      },
+      "loc": "2810 -240"
+    },
+    "SETTING_UP_VARIABLES": {
+      "entry": [
+        "call (VARIABLES_SET_UP) (event pkt queue)",
+        "trigger (event)"
+      ],
+      "on": {
+        "locations": {
+          "VARIABLES_SET_UP_DONE": "1832.3675079490267 0"
+        },
+        "VARIABLES_SET_UP_DONE": {
+          "target": "HANDLING_SYN"
+        }
+      },
+      "loc": "3460 -240"
+    },
+    "ERROR": {
+      "entry": [
+        "set (\"TIMEOUT\") (result)",
+        "return (result)"
+      ],
+      "on": {
+        "locations": {}
+      },
+      "loc": "3460 370"
+    },
+    "DISCONNECTING_CONTROL_CHANNEL": {
+      "entry": [
+        "call (CONTROL_CHANNEL_DISCONNECT ctrl_channel) (event)",
+        "trigger (event)"
+      ],
+      "on": {
+        "locations": {
+          "CONTROL_CHANNEL_DISCONNECTED": "3140 270"
+        },
+        "CONTROL_CHANNEL_DISCONNECTED": {
+          "target": "ENDING"
+        }
+      },
+      "loc": "2710 290"
+    }
+  },
+  "id": "MAIN"
+}

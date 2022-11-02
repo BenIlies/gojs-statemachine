@@ -1,0 +1,77 @@
+{
+  "id": "DNS_REQUEST_HANDLER",
+  "initial": "INITIALIZING",
+  "states": {
+    "INITIALIZING": {
+      "on": {
+        "STARTED": {
+          "target": "SETTING_UP_VARIABLES"
+        }
+      }
+    },
+    "LISTENING": {
+      "entry": "wait_packet_signal queue timeout",
+      "on": {
+        "PACKET_AVAILABLE": {
+          "target": "HANDLING_DNS_REPLY",
+          "actions": "assign (queue) (queue)"
+        },
+        "TIMEOUT": {
+          "target": "SETTING_UP_TIMEOUT_RETURN"
+        }
+      }
+    },
+    "HANDLING_DNS_REPLY": {
+      "entry": [
+        "get_element (queue 0) (dns_reply)",
+        "pop queue",
+        "set (\"DNS_REQUEST_DONE\") (event)",
+        "done"
+      ],
+      "on": {
+        "DONE": {
+          "target": "ENDING",
+          "actions": [
+            "assign (dns_reply) (dns_reply)",
+            "assign (event) (event)"
+          ]
+        }
+      }
+    },
+    "ENDING": {
+      "entry": "return (event dns_reply)"
+    },
+    "SETTING_UP_VARIABLES": {
+      "entry": [
+        "get_parameters (pkt queue)",
+        "set (4) (timeout)",
+        "send (pkt)"
+      ],
+      "on": {
+        "PACKET_SENT": {
+          "target": "LISTENING",
+          "actions": [
+            "assign (queue) (queue)",
+            "assign (timeout) (timeout)"
+          ]
+        }
+      }
+    },
+    "SETTING_UP_TIMEOUT_RETURN": {
+      "entry": [
+        "set (\"TIMEOUT\") (event)",
+        "set (NULL) (dns_reply)",
+        "done"
+      ],
+      "on": {
+        "DONE": {
+          "target": "ENDING",
+          "actions": [
+            "assign (dns_reply) (dns_reply)",
+            "assign (event) (event)"
+          ]
+        }
+      }
+    }
+  }
+}

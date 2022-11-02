@@ -1,0 +1,52 @@
+{
+  "id": "HTTP GET",
+  "initial": "INITIALIZING",
+  "states": {
+    "INITIALIZING": {
+      "on": {
+        "STARTED": {
+          "target": "SETTING_UP_CONTROL_LINK"
+        }
+      }
+    },
+    "STARTING 3-WAY-HANDSHAKE": {
+      "entry": "call THREE_WAY_HANDSHAKE",
+      "on": {
+        "FINISHED": {
+          "target": "ENDING"
+        }
+      }
+    },
+    "ENDING": {},
+    "SETTING_UP_CONTROL_LINK": {
+      "entry": "call CONTROL_LINK_SET_UP",
+      "on": {
+        "CONTROL_LINK_READY": {
+          "target": "SETTING_UP_VARIABLES"
+        },
+        "TIMEOUT": {
+          "target": "ENDING"
+        }
+      }
+    },
+    "SETTING_UP_VARIABLES": {
+      "entry": "call SETTING_UP_VARIABLES",
+      "on": {
+        "DONE": {
+          "target": "STARTING 3-WAY-HANDSHAKE"
+        }
+      }
+    },
+    "TEST ENDING CO": {
+      "entry": "wait_for_disconnecting_control_link  timeout_control",
+      "on": {
+        "TIMEOUT": {
+          "target": "ENDING"
+        },
+        "CONTROL_LINK_DISCONNECTING": {
+          "target": "ENDING"
+        }
+      }
+    }
+  }
+}
