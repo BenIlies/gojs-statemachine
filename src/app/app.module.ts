@@ -7,6 +7,10 @@ import { InspectorComponent } from './inspector/inspector.component';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { NavbarComponent } from './navbar/navbar.component';
+
+import {MatSelectModule} from '@angular/material/select';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -18,7 +22,9 @@ import { NavbarComponent } from './navbar/navbar.component';
   imports: [
     BrowserModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    MatSelectModule,
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

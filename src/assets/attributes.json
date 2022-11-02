@@ -1,0 +1,614 @@
+{
+    "actions": [
+        {
+            "name": "do_call",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_listen",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_send",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_done",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_handle_packets",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_pop",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_create_TCP_packet",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_set_IP_dst",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_set_IP_src",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_set_TCP_sport",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_set_TCP_dport",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_set_TCP_seq",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_set_TCP_flags",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_set_TCP_ack",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_set_TCP_payload",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_remove_TCP_payload",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_set_TCP_automatic_packet_seq",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_set_TCP_automatic_packet_ack",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_get_packet_IP",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_get_packet_port",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_print_TCP_payload",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_set_random_int",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_set_random_float",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_set_variable",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_add_sport_filter",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_add_dport_filter",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_remove_sport_filter",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_remove_dport_filter",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_set_finishing_event",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_return",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_wait_for_ready_control_link",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_wait_for_disconnecting_control_link",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "if_equal",
+            "args": [
+                "self",
+                "line",
+                "variables"
+            ]
+        },
+        {
+            "name": "if_gt",
+            "args": [
+                "self",
+                "line",
+                "variables"
+            ]
+        },
+        {
+            "name": "if_gte",
+            "args": [
+                "self",
+                "line",
+                "variables"
+            ]
+        },
+        {
+            "name": "if_it",
+            "args": [
+                "self",
+                "line",
+                "variables"
+            ]
+        },
+        {
+            "name": "if_ite",
+            "args": [
+                "self",
+                "line",
+                "variables"
+            ]
+        },
+        {
+            "name": "if_equal",
+            "args": [
+                "self",
+                "line",
+                "variables"
+            ]
+        }
+    ],
+    "conditions": [
+        {
+            "name": "do_call",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_listen",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_send",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_done",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_handle_packets",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_pop",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_create_TCP_packet",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_set_IP_dst",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_set_IP_src",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_set_TCP_sport",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_set_TCP_dport",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_set_TCP_seq",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_set_TCP_flags",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_set_TCP_ack",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_set_TCP_payload",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_remove_TCP_payload",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_set_TCP_automatic_packet_seq",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_set_TCP_automatic_packet_ack",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_get_packet_IP",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_get_packet_port",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_print_TCP_payload",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_set_random_int",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_set_random_float",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_set_variable",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_add_sport_filter",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_add_dport_filter",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_remove_sport_filter",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_remove_dport_filter",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_set_finishing_event",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_return",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_wait_for_ready_control_link",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "do_wait_for_disconnecting_control_link",
+            "args": [
+                "self",
+                "line",
+                "machine"
+            ]
+        },
+        {
+            "name": "if_equal",
+            "args": [
+                "self",
+                "line",
+                "variables"
+            ]
+        },
+        {
+            "name": "if_gt",
+            "args": [
+                "self",
+                "line",
+                "variables"
+            ]
+        },
+        {
+            "name": "if_gte",
+            "args": [
+                "self",
+                "line",
+                "variables"
+            ]
+        },
+        {
+            "name": "if_it",
+            "args": [
+                "self",
+                "line",
+                "variables"
+            ]
+        },
+        {
+            "name": "if_ite",
+            "args": [
+                "self",
+                "line",
+                "variables"
+            ]
+        },
+        {
+            "name": "if_equal",
+            "args": [
+                "self",
+                "line",
+                "variables"
+            ]
+        }
+    ]
+}

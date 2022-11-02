@@ -40,9 +40,9 @@ export class ManagerService {
     )
 
     this.model_list.push(this.model)
-    // this.fromJson("../assets/example.json").subscribe((model) => {this.model_list.push(model)})
-    // this.fromJson("../assets/m2.json").subscribe((model) => {this.model_list.push(model)})
-    // this.fromJson("../assets/m3.json").subscribe((model) => {this.model_list.push(model)})
+    this.fromJson("../assets/example.json").subscribe((model) => {this.model_list.push(model)})
+    this.fromJson("../assets/m2.json").subscribe((model) => {this.model_list.push(model)})
+    this.fromJson("../assets/m3.json").subscribe((model) => {this.model_list.push(model)})
     this.fromJson("../assets/mainBK.json").subscribe((model) => {this.model_list.push(model)})
 
 

@@ -11,18 +11,38 @@
       <input type="text" class="form-control" name="location" placeholder="Enter location" [(ngModel)]="data.loc">
 
     </div>
-
+    <br>
     <div class="form-group">
       <label >Select {{input_type}} </label>
 
-      <select *ngIf="data.category == 'state'" multiple class="form-control" name="actions" ngModel size="5" [(ngModel)]="data.entries">
+      <!-- <select *ngIf="data.category == 'state'" multiple class="form-control" name="a1" ngModel size="5" [(ngModel)]="data.entries">
         <option *ngFor="let action of data.entries" [value]="action"> {{ action["name"] }} </option>
         <option ng-blur="addItem()"><input type="text" placeholder="Write your own" id="newItem"></option>
       </select>
-      <select *ngIf="data.category == 'event'" multiple class="form-control" name="actions" ngModel size="5" [(ngModel)]="data.events">
+      <select *ngIf="data.category == 'event'" multiple class="form-control" name="a2" ngModel size="5" [(ngModel)]="data.events">
         <option *ngFor="let action of data.events" [value]="action"> {{ action["name"] }} </option>
         <option ng-blur="addItem()"><input type="text" placeholder="Write your own" id="newItem"></option>
-      </select>
+      </select> -->
+
+
+      <mat-form-field *ngIf="data.category == 'state'"  appearance="fill">
+        <mat-label>Choose action</mat-label>
+        <mat-select>
+          <mat-option *ngFor="let act of this.actions" [value]="act['name']">
+            {{act["name"]}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field  *ngIf="data.category == 'event'"  appearance="fill">
+        <mat-label>Choose condition</mat-label>
+        <mat-select>
+          <mat-option *ngFor="let cond of this.conditions" [value]="cond['name']">
+            {{cond["name"]}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
 
     </div>
     <br>
@@ -30,7 +50,10 @@
   </form>
 
   <div>
-    {{get_data()}}
+
+
+
+
   </div>
 
 </div>

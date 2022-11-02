@@ -28,7 +28,7 @@ const entryTemplate =
         editable: true
       },
       new go.Binding("text", "name").makeTwoWay()
-      )
+    )
   );
 
 
@@ -60,7 +60,7 @@ export class DiagramComponent implements OnInit {
 
 
   constructor(@Inject(DOCUMENT) document: Document,
-  private http: HttpClient, private ModelManager:ManagerService) {
+    private http: HttpClient, private ModelManager: ManagerService) {
     this.document = document;
     this.ModelManager.model$.subscribe(
       data => {
@@ -148,7 +148,7 @@ export class DiagramComponent implements OnInit {
   };
 
 
-  eventTemplate =
+  nodeTemplate =
     $(go.Panel, "Auto",
       $(go.Shape,
         {
@@ -161,18 +161,85 @@ export class DiagramComponent implements OnInit {
         }
         ,
         new go.Binding("portId", "pid")
-      )
-      ,
+      ),
       $(go.TextBlock,
         {
           margin: new go.Margin(4, 4, 2, 4),
           isMultiline: false,
           editable: true
         },
+        new go.Binding("text", "name").makeTwoWay()
+      )
+    )
+    ;
+
+  actionTemplate =
+    $(go.Panel, "Auto",
+      $(go.Shape,
+        {
+          fill: "#fafdff",
+          strokeWidth: 0.5,
+        }
+
+      ),
+      $(go.TextBlock,
+        {
+          margin: new go.Margin(4, 4, 2, 4),
+          isMultiline: false,
+          stroke: "black"
+        },
+        new go.Binding("text", "").makeTwoWay()
+      )
+    )
+    ;
+
+  eventTemplate =
+  $(go.Panel, "Auto",
+
+    $(go.Panel, "Table",
+    { minSize: new go.Size(150, NaN) },
+    $(go.Panel, "Auto",
+      { stretch: go.GraphObject.Horizontal },
+      $(go.Shape,
+        {
+          // locationSpot: go.Spot.Top,
+          fill: "#db5431",
+          fromLinkable: true,
+          fromLinkableDuplicates: true,
+          fromSpot: go.Spot.LeftRightSides,
+          cursor: "pointer",
+        },
+        new go.Binding("portId", "pid")
+        ),
+      $(go.TextBlock,
+        {
+          margin: new go.Margin(2, 4, 0, 4),
+          stroke: "white",
+          font: "bold 10pt sans-serif",
+          isMultiline: false,
+        },
         new go.Binding("text", "name").makeTwoWay())
+    ),
+
+    $(go.Panel, "Vertical",
+      {
+        row: 1,
+        stretch: go.GraphObject.Horizontal,
+        defaultStretch: go.GraphObject.Horizontal,
+        itemTemplate: this.actionTemplate
+      },
+      new go.Binding("itemArray", "actions", function (data) { if (Object.prototype.toString.call(data) === '[object Array]') return data; else return [data]; }),
+    )
+  )
+  );
 
 
-    );
+
+
+
+
+
+
 
   public ngAfterViewInit(): void {
     this.diagram = $(go.Diagram, 'myDiagramDiv',
@@ -193,8 +260,8 @@ export class DiagramComponent implements OnInit {
 
     let default_node_temp =
       $(go.Node, "Auto",
-      new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify),
-      new go.Binding("BORDER.stroke", "isHighlighted", h => h ? "orange" : "black").ofObject(),
+        new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify),
+        new go.Binding("BORDER.stroke", "isHighlighted", h => h ? "orange" : "black").ofObject(),
         $(go.Shape, { name: "BORDER", fill: null, strokeWidth: 2 },
           new go.Binding("stroke", "color")),
         $(go.Panel, "Table",
@@ -230,7 +297,7 @@ export class DiagramComponent implements OnInit {
               row: 1,
               stretch: go.GraphObject.Horizontal,
               defaultStretch: go.GraphObject.Horizontal,
-              itemTemplate: this.eventTemplate,
+              itemTemplate: this.nodeTemplate,
 
             },
             new go.Binding("itemArray", "entries"),

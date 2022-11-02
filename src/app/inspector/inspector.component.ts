@@ -1,6 +1,11 @@
 import { DOCUMENT } from '@angular/common';
 import { Component, Inject, Input, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
 import { ManagerService } from '../manager.service';
+import { HttpClient } from '@angular/common/http';
+import {MatSelectModule} from '@angular/material/select';
+
+
 
 @Component({
   selector: 'app-inspector',
@@ -34,10 +39,10 @@ export class InspectorComponent implements OnInit {
 
       if(this.data.category == "event"){
         this.input_type = "events"
-        this.actions = this._selectedNode.data.events;
+        // this.actions = this._selectedNode.data.events;
       }else{
         this.input_type = "entries"
-        this.actions = this._selectedNode.data.entries;
+        // this.actions = this._selectedNode.data.entries;
 
       }
       this.data.events = this._selectedNode.data.events;
@@ -53,16 +58,23 @@ export class InspectorComponent implements OnInit {
     {pid: "aw", name: "LISTEN", condition: "condition:", target: "target"},
     {pid: "aq", name: "SET_TIMEOUT", condition: "condition:", target: "target"}
   ]
+  public conditions = []
   public selectedActions = []
 
   public document: any;
-  constructor(@Inject(DOCUMENT) document: Document, private ModelManager:ManagerService) {
+  constructor(@Inject(DOCUMENT) document: Document, private ModelManager:ManagerService, private http: HttpClient) {
     this.document = document;
 
     this.ModelManager.model$.subscribe(
       data => {
         this.model = data
       });
+
+      this.getJSON("../assets/attributes.json").subscribe((data)=>{
+        this.actions = data['actions']
+        this.conditions = data['conditions']
+
+      })
 
 
    }
@@ -103,6 +115,11 @@ export class InspectorComponent implements OnInit {
 
   get_data(){
     return JSON.stringify(this.data, null, 2)
+  }
+
+
+  public getJSON(file: string): Observable<any> {
+    return this.http.get(file);
   }
 
 }

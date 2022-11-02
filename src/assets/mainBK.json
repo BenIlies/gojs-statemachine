@@ -34,7 +34,8 @@
           "actions": [
             "assign (dns_reply) (dns_reply)",
             "assign (event) (event)"
-          ]
+          ],
+          "cond": "Life is good"
         }
       }
     },
@@ -48,13 +49,25 @@
         "send (pkt)"
       ],
       "on": {
-        "PACKET_SENT": {
+        "PACKET_SENT": [
+          {
           "target": "LISTENING",
           "actions": [
             "assign (queue) (queue)",
             "assign (timeout) (timeout)"
-          ]
+          ],
+          "cond": "life is good"
+
+        },
+        {
+          "target": "SETTING_UP_TIMEOUT_RETURN",
+          "actions": [
+            "assign (queue) (queueueue)",
+            "assign (timeout) (timeout)"
+          ],
+          "cond": "life is bad"
         }
+      ]
       }
     },
     "SETTING_UP_TIMEOUT_RETURN": {
