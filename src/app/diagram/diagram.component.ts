@@ -171,8 +171,17 @@ export class DiagramComponent implements OnInit {
           isMultiline: false,
           editable: true
         },
-        new go.Binding("text", "name").makeTwoWay()
+        new go.Binding("text", "", function(data)
+        {
+          var r = ""
+          for (let index = 0; index < data.parm.length; index++) {
+            r = r.concat("("+ data.parm[index] +")"+  " ")
+
+          }
+          return data.command.concat(" " + r);
+        })
       )
+
     );
 
 
@@ -183,7 +192,6 @@ export class DiagramComponent implements OnInit {
           fill: "#fafdff",
           strokeWidth: 0.5,
         }
-
       ),
       $(go.TextBlock,
         {
@@ -191,7 +199,15 @@ export class DiagramComponent implements OnInit {
           isMultiline: false,
           stroke: "black"
         },
-        new go.Binding("text", "").makeTwoWay()
+        new go.Binding("text", "", function(data)
+        {
+          var r = ""
+          for (let index = 0; index < data.parm.length; index++) {
+            r = r.concat("("+ data.parm[index] +")"+  " ")
+
+          }
+          return data.command.concat(" " + r);
+        })
       )
     )
     ;
@@ -222,7 +238,16 @@ export class DiagramComponent implements OnInit {
               font: "bold 10pt sans-serif",
               isMultiline: false,
             },
-            new go.Binding("text", "name").makeTwoWay())
+            new go.Binding("text", "", function(data)
+            {
+              var r = ""
+              for (let index = 0; index < data.parm.length; index++) {
+                r = r.concat("("+ data.parm[index] +")"+  " ")
+
+              }
+              return data.command.concat(" " + r);
+            })
+          )
         ),
 
         $(go.Panel, "Vertical",

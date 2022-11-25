@@ -1,5 +1,5 @@
 <div *ngIf="show" class="container"
-  style="background-color: rgb(247, 249, 252); float: left; margin-left: 15px; height: 600px; width: 300px; position: absolute; right: 10px; top: 10px;  z-index: 10; overflow: scroll; padding-top: 15px;">
+  style="background-color: rgb(247, 249, 252); float: left; margin-left: 15px; height: 600px; width: 500px; position: absolute; right: 10px; top: 10px;  z-index: 10; overflow: scroll; padding-top: 15px;">
 
   <form (ngSubmit)="onCommitForm()">
     <div class="form-group">
@@ -18,18 +18,38 @@
       <label>Select {{input_type}} </label>
 
       <div *ngIf="data.category == 'state'">
+        <span>Entry Functions</span>
+
         <mat-nav-list>
-          <mat-list-item *ngFor="let link of data.entries; let i = index">
-            <a matLine href="...">{{ link['name'] }}</a>
-            <mat-icon (click)="remove_item(i, data.entries)" aria-hidden="false" aria-label="Example home icon"
-              fontIcon="delete forever">remove</mat-icon>
-          </mat-list-item>
+
+            <div matLine *ngFor="let e of data.entries; let i = index">
+              <div class="flex-container">
+                <div style="flex-grow: 6">
+                  <span>{{ e['command'] }}</span>
+                </div>
+
+                <div style="flex-grow: 1" *ngFor="let item of [].constructor(e['input_args']); let j = index ">
+                  <label>input {{j+1}}</label>
+                  <input type="text" class="form-control" name="{{i+e['command']+e['parm'][j]}}"
+                    [(ngModel)]="e['parm'][j]">
+                </div>
+
+                <div style="flex-grow: 1">
+                  <mat-icon (click)="remove_item(i, data.entries)" aria-hidden="false" aria-label="Example home icon"
+                    fontIcon="delete forever">remove</mat-icon>
+                </div>
+              </div>
+
+            </div>
+
+
+
           <mat-list-item style="margin-top: 15px; margin-bottom: 10px;">
             <mat-form-field *ngIf="data.category == 'state'" appearance="fill">
               <mat-label>Choose action</mat-label>
               <mat-select (selectionChange)="action_selected($event)">
-                <mat-option *ngFor="let act of this.actions" [value]="act['name']">
-                  {{act["name"]}}
+                <mat-option *ngFor="let act of this.actions" [value]="act">
+                  {{act["command"]}}
                 </mat-option>
               </mat-select>
             </mat-form-field>
@@ -38,14 +58,64 @@
       </div>
 
 
+      <!-- same for exsit
+       -->
+       <div *ngIf="data.category == 'state'">
+        <span>Exit Functions</span>
+        <mat-nav-list>
+
+            <div matLine *ngFor="let e of data.exit; let i = index">
+              <div class="flex-container">
+                <div style="flex-grow: 6">
+                  <span>{{ e['command'] }}</span>
+                </div>
+
+                <div style="flex-grow: 1" *ngFor="let item of [].constructor(e['input_args']); let j = index ">
+                  <label>input {{i+1}}</label>
+                  <input type="text" class="form-control" name="{{e['command']+e['parm'][j]}}"
+                    [(ngModel)]="e['parm'][j]">
+                </div>
+
+                <div style="flex-grow: 1">
+                  <mat-icon (click)="remove_item(i, data.entries)" aria-hidden="false" aria-label="Example home icon"
+                    fontIcon="delete forever">remove</mat-icon>
+                </div>
+              </div>
+
+            </div>
+
+
+
+          <mat-list-item style="margin-top: 15px; margin-bottom: 10px;">
+            <mat-form-field *ngIf="data.category == 'state'" appearance="fill">
+              <mat-label>Choose action</mat-label>
+              <mat-select (selectionChange)="action_selected_for_exit($event)">
+                <mat-option *ngFor="let act of this.actions" [value]="act">
+                  {{act["command"]}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </mat-list-item>
+        </mat-nav-list>
+      </div>
+
+      <!-- END of exit  -->
+
       <div *ngIf="data.category == 'event'">
         <div style="margin-bottom: 30px;">
-          <mat-nav-list>
-            <mat-list-item style="margin-bottom: 10px;" *ngFor="let e of data.events; let i = index">
+          <mat-nav-list disableRipple>
+            <mat-list-item style="margin-bottom: 10px; height: fit-content;"
+              *ngFor="let e of data.events; let i = index" (click)="$event.preventDefault();$event.stopPropagation()">
               <div matLine>
                 <div class="flex-container">
-                  <div style="flex-grow: 10">
-                    <a href="...">{{ e['name'] }}</a>
+                  <div style="flex-grow: 6">
+                    <span>{{ e['command'] }}</span>
+                  </div>
+
+                  <div style="flex-grow: 0.5" *ngFor="let item of [].constructor(e['input_args']); let i = index ">
+                    <label>input {{i+1}}</label>
+                    <input type="text" class="form-control" name="{{e['command']+e['parm'][i]}}"
+                      [(ngModel)]="e['parm'][i]">
                   </div>
 
                   <div style="flex-grow: 1">
@@ -59,20 +129,34 @@
 
 
               <div mat-line style="width: 100%; background-color: antiquewhite; float: left;">
-                <mat-nav-list>
-                  <mat-list-item *ngFor="let a of e['actions']; let i = index">
+                <mat-nav-list disableRipple style="background-color: antiquewhite;">
 
-                    <a matLine href="...">{{ a }}</a>
-                    <mat-icon (click)="remove_item(i, e['actions'])" aria-hidden="false" aria-label="Example home icon"
-                      fontIcon="delete forever">delete forever</mat-icon>
+                  <div matLine *ngFor="let a of e['actions']; let i = index" style="background-color: antiquewhite;">
+                    <div class="flex-container">
+                      <div style="flex-grow: 6">
+                        <span matLine>{{ a['command'] }}</span>
+                      </div>
 
+                      <div style="flex-grow: 0.5" *ngFor="let item of [].constructor(a['input_args']); let j = index ">
+                        <label>input {{j+1}}</label>
 
-                  </mat-list-item>
+                        <input type="text" class="form-control" name="{{a['command']+a['parm'][j]}}"
+                          [(value)]="a['parm'][j]" [(ngModel)]="a['parm'][j]">
+                      </div>
+
+                      <div style="flex-grow: 1">
+                        <mat-icon (click)="remove_item(i, e['actions'])" aria-hidden="false"
+                          aria-label="Example home icon" fontIcon="delete forever">delete forever</mat-icon>
+                      </div>
+
+                    </div>
+                  </div>
+                  <!-- end of line -->
                   <mat-list-item style="margin-top: 15px; margin-bottom: 10px;">
                     <mat-form-field mat-line appearance="fill">
                       <mat-label>Choose action</mat-label>
                       <mat-select (selectionChange)="event_action_selected($event, i)">
-                        <mat-option *ngFor="let act of this.actions" [value]="act['command']">
+                        <mat-option *ngFor="let act of this.actions" [value]="act">
                           {{act["command"]}}
                         </mat-option>
                       </mat-select>
@@ -95,7 +179,7 @@
           <mat-form-field mat-line appearance="fill">
             <mat-label>Choose condition</mat-label>
             <mat-select (selectionChange)="condition_selected($event)">
-              <mat-option *ngFor="let cond of this.conditions" [value]="cond['command']">
+              <mat-option *ngFor="let cond of this.conditions" [value]="cond">
                 {{cond["command"]}}
               </mat-option>
             </mat-select>
@@ -115,9 +199,9 @@
     <button type="submit" class="btn btn-primary">Submit</button>
   </form>
 
-<div>
+  <div>
 
-  {{this.data | json}}
-</div>
+    {{this.data | json}}
+  </div>
 
 </div>

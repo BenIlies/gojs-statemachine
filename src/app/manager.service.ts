@@ -45,11 +45,11 @@ export class ManagerService {
 
 
     // this.model_list.push(this.model)
-    this.fromJson("../assets/example.json").subscribe((model) => { this.model_list.push(model) })
-    this.fromJson("../assets/m2.json").subscribe((model) => { this.model_list.push(model) })
-    this.fromJson("../assets/m3.json").subscribe((model) => { this.model_list.push(model) })
-    this.fromJson("../assets/m4.json").subscribe((model) => { this.model_list.push(model) })
-    this.fromJson("../assets/mainBK.json").subscribe((model) => { this.model_list.push(model) })
+    // this.fromJson("../assets/example.json").subscribe((model) => { this.model_list.push(model) })
+    // this.fromJson("../assets/m2.json").subscribe((model) => { this.model_list.push(model) })
+    // this.fromJson("../assets/m3.json").subscribe((model) => { this.model_list.push(model) })
+    // this.fromJson("../assets/m4.json").subscribe((model) => { this.model_list.push(model) })
+    // this.fromJson("../assets/mainBK.json").subscribe((model) => { this.model_list.push(model) })
     this.fromJson("../assets/dns_request.json").subscribe((model) => { this.model_list.push(model) })
 
 
@@ -157,11 +157,23 @@ export class ManagerService {
         if (json_data[key]["entry"]) {
           if (Object.prototype.toString.call(json_data[key]["entry"]) === '[object Array]') {
             for (let e in json_data[key]["entry"]) {
-              entries.push({ name: json_data[key]["entry"][e] })
+              // extract the function and the attrib
+              console.log(json_data[key]["entry"][e])
+              let atrib = this.parse_function(json_data[key]["entry"][e])
+              let command = atrib['command']
+              let parm = atrib['parm']
+              // for each action extract func and attrib
+
+              entries.push({ name: command, command: command, parm: parm})
             }
           }
           else {
-            entries.push({ name: json_data[key]["entry"] })
+            // extract the function and the attrib
+            let atrib = this.parse_function(json_data[key]["entry"]["entry"])
+            let command = atrib['command']
+            let parm = atrib['parm']
+
+            entries.push({ name: command, command: command, parm: parm })
           }
         }
 
@@ -170,12 +182,23 @@ export class ManagerService {
         if (json_data[key]["exit"]) {
           if (Object.prototype.toString.call(json_data[key]["exit"]) === '[object Array]') {
             for (let e in json_data[key]["exit"]) {
+              // extract the function and the attrib
 
-              _exit.push({ name: json_data[key]["exit"][e] })
+              let atrib = this.parse_function(json_data[key]["exit"][e])
+              let command = atrib['command']
+              let parm = atrib['parm']
+              // for each action extract func and attrib
+
+              _exit.push({ name: command, command: command, parm: parm})
             }
           }
           else {
-            _exit.push({ name: json_data[key]["exit"] })
+            let atrib = this.parse_function(json_data[key]["exit"])
+            let command = atrib['command']
+            let parm = atrib['parm']
+            // for each action extract func and attrib
+
+            _exit.push({ name: command, command: command, parm: parm})
           }
         }
 
@@ -189,20 +212,33 @@ export class ManagerService {
           if (json_data[key]["on"]["locations"]) {
             _loc = json_data[key]["on"]["locations"][event]
           }
+
           let temp_node = { key: key + '_' + event, name: event, category: "event", parent: key, events: new Array<any>(), entries: [], loc: _loc }
           let new_link = { "from": key, "to": key + '_' + event, "pid": "a" };
           // console.log(json_data[key]["on"][event])
           let conditions = json_data[key]["on"][event];
           if (Object.prototype.toString.call(conditions) === '[object Array]') {
             for (let cond of conditions) {
-              temp_node.events.push({ pid: cond['cond'], name: cond['cond'], actions: cond['actions'] })
+              // extract the function and the attrib
+              let atrib = this.parse_function(cond['cond'])
+              let condition = atrib['command']
+              let parm = atrib['parm']
+              // for each action extract func and attrib
+              console.log(cond)
+
+              console.log(cond['actions'])
+              let _actions = this.parse_actions(cond['actions']) || [];
+              console.log(_actions)
+              temp_node.events.push({ pid: cond['cond'], name: condition, command: condition, parm: parm,  actions: _actions })
               let new_link = { "from": key + '_' + event, "to": cond['target'], "pid": cond['cond'], parent: key, name: event };
               mynodeLinkArray.push(new_link)
             }
           }
           else {
-            let _actions = conditions['actions'] || [];
-            temp_node.events.push({ pid: "default", name: "defult", actions: _actions })
+            // extract the function and the attrib
+            // for each action extract func and attrib
+            let _actions = this.parse_actions(conditions['actions']) || [];
+            temp_node.events.push({ pid: "default", name: "defult", command: 'default', parm: [], actions: _actions })
             let new_link = { "from": key + '_' + event, "to": conditions['target'], "pid": "default", parent: key, name: event };
             mynodeLinkArray.push(new_link)
           }
@@ -247,6 +283,53 @@ export class ManagerService {
         ]
       }
     ))
+  }
+
+  parse_function(txt: string) {
+    console.log("trying txt");
+    console.log(txt)
+    let init = txt.indexOf('(');
+
+    let func = txt.substr(0, init - 1);
+    let text = txt.substring(init - 1)
+    init = text.indexOf('(');
+    let parm = []
+    let i = 0
+    while (init>0) {
+      i++
+      console.log("trying txt");
+      console.log(text)
+      let fin = text.indexOf(')');
+      parm.push((text.substr(init + 1, fin - init - 1)))
+
+      text = text.substr(fin+1)
+      console.log(text)
+      if(txt){
+        init = text.indexOf("(");
+      }
+
+      console.log(init)
+    }
+    return { command: func, parm: parm , input_args: i}
+  }
+
+  parse_actions(actions: any): any {
+
+    let results = []
+    if (typeof actions !== "undefined") {
+      if (Object.prototype.toString.call(actions) === '[object Array]') {
+        for (let a of actions) {
+          results.push(this.parse_function(a))
+        }
+      }
+      else{
+        results.push(this.parse_function(actions))
+      }
+    }
+
+
+
+    return results
   }
 
 }

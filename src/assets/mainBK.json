@@ -35,7 +35,7 @@
             "assign (dns_reply) (dns_reply)",
             "assign (event) (event)"
           ],
-          "cond": "condition 1"
+          "cond": "condition (1)"
         }
       }
     },
@@ -56,7 +56,7 @@
             "assign (queue) (queue)",
             "assign (timeout) (timeout)"
           ],
-          "cond": "condition 1"
+          "cond": "condition (1)"
 
         },
         {
@@ -65,7 +65,7 @@
             "assign (queue) (queueueue)",
             "assign (timeout) (timeout)"
           ],
-          "cond": "condition 2"
+          "cond": "condition (2)"
         }
       ]
       }
