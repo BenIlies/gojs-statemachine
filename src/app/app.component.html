@@ -27,21 +27,25 @@
   </div>
   <!-- /#sidebar-wrapper -->
 
+
   <!-- Page Content -->
-  <div id="page-content-wrapper">
+  <div id="page-content-wrapper" >
+
+    <div class="container-fluid" style="position: relative; width: 100%; height: 100%; padding: 0;">
+      <div style="width: 30px; height: 100vh; margin: 0px; display: inline-block;">
+        <button style="float: left;  width: 30px; height: 100vh; padding: 0; border-radius: 0px; background-color: #dce6e6;"
+        class="btn" (click)="clickEvent()"><span class="virt_text">toggle menu</span></button>
+
+      </div>
+    <div style="width: calc(100% - 30px); margin: 0px; display: inline-block; padding: 0px;">
+      <app-diagram #diagram style="float: left; height: 100vh; width: 100%; margin: 0px;"
+      (nodeClicked)="setSelectedNode($event)" ></app-diagram>
+    </div>
 
 
-    <button style=" width: 30px; height: 100%; float:left; padding: 0; border-radius: 0px; background-color: #dce6e6;"
-      class="btn" (click)="clickEvent()"><span class="virt_text">toggle menu</span></button>
 
-    <div class="container-fluid" style="position: relative;">
 
-      <app-diagram #diagram style="float: left; height: 600px; width: 95%;" [model]='model'
-        (nodeClicked)="setSelectedNode($event)" (modelChanges)="setModel($event)"></app-diagram>
-
-      <app-inspector
-        style="float: left; margin-left: 15px; height: 100vh; width: 300px; position: absolute; right: 0px;  z-index: 10;"
-        [selectedNode]="selectedNode" [model]="model">
+      <app-inspector>
       </app-inspector>
 
 

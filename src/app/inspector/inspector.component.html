@@ -1,47 +1,113 @@
+<div *ngIf="show" class="container"
+  style="background-color: rgb(247, 249, 252); float: left; margin-left: 15px; height: 600px; width: 300px; position: absolute; right: 10px; top: 10px;  z-index: 10; overflow: scroll; padding-top: 15px;">
 
-<div *ngIf="selectedNode" class="container" style="background-color: gray; height: 100%;">
-
-  <form  (ngSubmit)="onCommitForm()">
+  <form (ngSubmit)="onCommitForm()">
     <div class="form-group">
-      <label >Name</label>
+      <label>Name</label>
       <input type="text" class="form-control" name="name" placeholder="Enter Name" [(ngModel)]="data.name">
-      <label >type</label>
+      <br>
+      <label>type</label>
       <input type="text" class="form-control" name="category" placeholder="Enter Name" [(ngModel)]="data.category">
-      <label >location</label>
+      <br>
+      <label>location</label>
       <input type="text" class="form-control" name="location" placeholder="Enter location" [(ngModel)]="data.loc">
 
     </div>
     <br>
     <div class="form-group">
-      <label >Select {{input_type}} </label>
+      <label>Select {{input_type}} </label>
 
-      <!-- <select *ngIf="data.category == 'state'" multiple class="form-control" name="a1" ngModel size="5" [(ngModel)]="data.entries">
-        <option *ngFor="let action of data.entries" [value]="action"> {{ action["name"] }} </option>
-        <option ng-blur="addItem()"><input type="text" placeholder="Write your own" id="newItem"></option>
-      </select>
-      <select *ngIf="data.category == 'event'" multiple class="form-control" name="a2" ngModel size="5" [(ngModel)]="data.events">
-        <option *ngFor="let action of data.events" [value]="action"> {{ action["name"] }} </option>
-        <option ng-blur="addItem()"><input type="text" placeholder="Write your own" id="newItem"></option>
-      </select> -->
+      <div *ngIf="data.category == 'state'">
+        <mat-nav-list>
+          <mat-list-item *ngFor="let link of data.entries; let i = index">
+            <a matLine href="...">{{ link['name'] }}</a>
+            <mat-icon (click)="remove_item(i, data.entries)" aria-hidden="false" aria-label="Example home icon"
+              fontIcon="delete forever">remove</mat-icon>
+          </mat-list-item>
+          <mat-list-item style="margin-top: 15px; margin-bottom: 10px;">
+            <mat-form-field *ngIf="data.category == 'state'" appearance="fill">
+              <mat-label>Choose action</mat-label>
+              <mat-select (selectionChange)="action_selected($event)">
+                <mat-option *ngFor="let act of this.actions" [value]="act['name']">
+                  {{act["name"]}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </mat-list-item>
+        </mat-nav-list>
+      </div>
 
 
-      <mat-form-field *ngIf="data.category == 'state'"  appearance="fill">
-        <mat-label>Choose action</mat-label>
-        <mat-select>
-          <mat-option *ngFor="let act of this.actions" [value]="act['name']">
-            {{act["name"]}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+      <div *ngIf="data.category == 'event'">
+        <div style="margin-bottom: 30px;">
+          <mat-nav-list>
+            <mat-list-item style="margin-bottom: 10px;" *ngFor="let e of data.events; let i = index">
+              <div matLine>
+                <div class="flex-container">
+                  <div style="flex-grow: 10">
+                    <a href="...">{{ e['name'] }}</a>
+                  </div>
 
-      <mat-form-field  *ngIf="data.category == 'event'"  appearance="fill">
-        <mat-label>Choose condition</mat-label>
-        <mat-select>
-          <mat-option *ngFor="let cond of this.conditions" [value]="cond['name']">
-            {{cond["name"]}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+                  <div style="flex-grow: 1">
+                    <mat-icon (click)="remove_item(i, data.events)" aria-hidden="false" aria-label="Example home icon"
+                      fontIcon="delete forever">delete forever</mat-icon>
+                  </div>
+
+                </div>
+              </div>
+
+
+
+              <div mat-line style="width: 100%; background-color: antiquewhite; float: left;">
+                <mat-nav-list>
+                  <mat-list-item *ngFor="let a of e['actions']; let i = index">
+
+                    <a matLine href="...">{{ a }}</a>
+                    <mat-icon (click)="remove_item(i, e['actions'])" aria-hidden="false" aria-label="Example home icon"
+                      fontIcon="delete forever">delete forever</mat-icon>
+
+
+                  </mat-list-item>
+                  <mat-list-item style="margin-top: 15px; margin-bottom: 10px;">
+                    <mat-form-field mat-line appearance="fill">
+                      <mat-label>Choose action</mat-label>
+                      <mat-select (selectionChange)="event_action_selected($event, i)">
+                        <mat-option *ngFor="let act of this.actions" [value]="act['command']">
+                          {{act["command"]}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </mat-list-item>
+                </mat-nav-list>
+
+
+              </div>
+
+
+
+
+            </mat-list-item>
+
+          </mat-nav-list>
+        </div>
+
+        <div>
+          <mat-form-field mat-line appearance="fill">
+            <mat-label>Choose condition</mat-label>
+            <mat-select (selectionChange)="condition_selected($event)">
+              <mat-option *ngFor="let cond of this.conditions" [value]="cond['command']">
+                {{cond["command"]}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+        </div>
+
+
+
+
+      </div>
+
 
 
     </div>
@@ -49,13 +115,9 @@
     <button type="submit" class="btn btn-primary">Submit</button>
   </form>
 
-  <div>
+<div>
 
-
-
-
-  </div>
-
+  {{this.data | json}}
 </div>
 
-
+</div>

@@ -13,13 +13,19 @@ export class ManagerService {
 
   // Observable model sources
   private selectedModelSource = new Subject<go.GraphLinksModel>();
+  private selectedNodeSource = new Subject<go.Node>();
+
 
   // Observable model streams
   model$ = this.selectedModelSource.asObservable();
+  node$ = this.selectedNodeSource.asObservable();
+
 
   public model: go.GraphLinksModel;
 
   public model_list: go.GraphLinksModel[] = []
+
+  public selectedNode: go.Node;
 
   constructor(private http: HttpClient) {
 
@@ -28,44 +34,46 @@ export class ManagerService {
         linkFromPortIdProperty: "pid",  // required information:
         // identifies data property names
         nodeDataArray: [
-          { name: "START", category: "state", events: [{ pid: "a1", name: "listen", condition: "condition:", target: "target" }] },
-          // { name: "Event", category: "event", conditions: [{ pid: "a2", name: "wait", condition: "condition:", target: "target" }, { pid: "b2", name: "send", condition: "condition:", target: "target" }] },
-          // { name: "FINISH", category: "event", events: [{ pid: "a3", name: "send", condition: "condition:", target: "target" }], entries: [{ pid: "e1", name: "do_somthing", condition: "condition:", target: "target" }] },
-
+          { name: "START", category: "state", entries: [], exit: [], pid: "" },
         ],
         linkDataArray: [
           // no predeclared links
         ]
       }
     )
+    this.announceModel(this.model)
 
-    this.model_list.push(this.model)
-    this.fromJson("../assets/example.json").subscribe((model) => {this.model_list.push(model)})
-    this.fromJson("../assets/m2.json").subscribe((model) => {this.model_list.push(model)})
-    this.fromJson("../assets/m3.json").subscribe((model) => {this.model_list.push(model)})
-    this.fromJson("../assets/mainBK.json").subscribe((model) => {this.model_list.push(model)})
+
+    // this.model_list.push(this.model)
+    this.fromJson("../assets/example.json").subscribe((model) => { this.model_list.push(model) })
+    this.fromJson("../assets/m2.json").subscribe((model) => { this.model_list.push(model) })
+    this.fromJson("../assets/m3.json").subscribe((model) => { this.model_list.push(model) })
+    this.fromJson("../assets/m4.json").subscribe((model) => { this.model_list.push(model) })
+    this.fromJson("../assets/mainBK.json").subscribe((model) => { this.model_list.push(model) })
+    this.fromJson("../assets/dns_request.json").subscribe((model) => { this.model_list.push(model) })
 
 
   }
 
-    // Service message commands
-    announceModel(model: go.GraphLinksModel) {
-      this.selectedModelSource.next(model);
-    }
+  // Service message commands
+  announceModel(model: go.GraphLinksModel) {
+    this.selectedModelSource.next(model);
+  }
 
-    selectModel(model: go.GraphLinksModel){
-      console.log('selecting model')
-      console.log(model.toJson())
+  announceNode(node: go.Node) {
+    this.selectedNodeSource.next(node);
+  }
 
-      // this.model = model;
-      this.announceModel(model)
-    }
-  // load() {
-  //   if (this.diagram != null) {
-  //     this.diagram.model = go.Model.fromJson(this.document.getElementById("jsonViewer").value);
+  selectModel(model: go.GraphLinksModel) {
+    // this.model = model;
+    this.announceModel(model)
+  }
 
-  //   }
-  // }
+  selectNode(node: go.Node) {
+    // this.model = model;
+    this.announceNode(node)
+  }
+
 
   to_json(model_data: any) {
     // return model_data
@@ -77,93 +85,111 @@ export class ManagerService {
 
     for (let item of model_data["nodeDataArray"]) {
       let entries = []
+      let _exit = []
       if (item['category'] == 'state') {
 
-        console.log("entriees")
+
 
         for (let e of item['entries']) {
-          console.log(e['name'])
 
           entries.push(e["name"])
         }
-        json_obj.states[item['name']] = { entry: entries, on: {locations: {}} , loc: item["loc"]}
+        for (let e of item['exit']) {
+
+          _exit.push(e["name"])
+        }
+        json_obj.states[item['name']] = { entry: entries, exit: _exit, on: { locations: {} }, loc: item["loc"] }
       }
     }
     for (let item of model_data["nodeDataArray"]) {
       if (item['category'] == 'event') {
         json_obj.states[item['parent']]["on"][item['name']] = {}
-        json_obj.states[item['parent']]["on"]["locations"][item['name']]= item["loc"]
+        json_obj.states[item['parent']]["on"]["locations"][item['name']] = item["loc"]
       }
     }
     for (let item of model_data["linkDataArray"]) {
       if (json_obj.states[item['to']]) {
         if (item['pid'] == 'default') {
-          json_obj.states[item['parent']]["on"][item['name']] = { target: item['to'],  }
+          json_obj.states[item['parent']]["on"][item['name']] = { target: item['to'], }
         } else {
           let source_node = this.model!.findNodeDataForKey(item['from'])
-          console.log("source_node")
           let temp_cond = ""
           for (let e of source_node!['events']) {
-            console.log(e)
 
             if (e!['pid'] == item['pid']) {
               temp_cond = e['name']
             }
 
           }
+
           if (Object.prototype.toString.call(json_obj.states[item['parent']]["on"][item['name']]) === '[object Array]') {
             json_obj.states[item['parent']]["on"][item['name']].push(
-              { cond: temp_cond, target: item['to'],  loc: item["loc"]}
+              { cond: temp_cond, target: item['to'], loc: item["loc"] }
             )
           }
           else {
-            json_obj.states[item['parent']]["on"][item['name']] = [{ cond: temp_cond, target: item['to']}]
+            json_obj.states[item['parent']]["on"][item['name']] = [{ cond: temp_cond, target: item['to'] }]
           }
 
         }
       }
 
     }
-    return JSON.stringify(json_obj, null, 2);
+    return JSON.stringify(json_obj);
   }
 
   public getJSON(file: string): Observable<any> {
     return this.http.get(file);
   }
 
-  public fromJson(file: string): Observable<go.GraphLinksModel>{
+  public fromJson(file: string): Observable<go.GraphLinksModel> {
 
-    console.log('setting model form json')
     var self = this
     var mynodeDataArray: any = []
     var mynodeLinkArray: any = []
     var subject = new Subject<go.GraphLinksModel>();
     this.getJSON(file).subscribe(data => {
-      // console.log(data);
       let json_data = data['states']
 
       for (var key in json_data) {
-
+        // parsing enrty
         let entries = []
-        if (Object.prototype.toString.call(json_data[key]["entry"]) === '[object Array]') {
-          for (let e in json_data[key]["entry"]) {
-            entries.push({ name: json_data[key]["entry"][e] })
+        if (json_data[key]["entry"]) {
+          if (Object.prototype.toString.call(json_data[key]["entry"]) === '[object Array]') {
+            for (let e in json_data[key]["entry"]) {
+              entries.push({ name: json_data[key]["entry"][e] })
+            }
+          }
+          else {
+            entries.push({ name: json_data[key]["entry"] })
           }
         }
-        else {
-          entries.push({ name: json_data[key]["entry"] })
+
+        // parsing exit
+        let _exit = []
+        if (json_data[key]["exit"]) {
+          if (Object.prototype.toString.call(json_data[key]["exit"]) === '[object Array]') {
+            for (let e in json_data[key]["exit"]) {
+
+              _exit.push({ name: json_data[key]["exit"][e] })
+            }
+          }
+          else {
+            _exit.push({ name: json_data[key]["exit"] })
+          }
         }
 
-        let temp_node = { key: key, name: key, category: "state", entries: entries, loc: json_data[key]["loc"]}
+        let temp_node = { key: key, name: key, category: "state", entries: entries, exit: _exit, loc: json_data[key]["loc"] }
         mynodeDataArray.push(temp_node)
 
+
         for (var event in json_data[key]["on"]) {
-          if(event =="locations") continue
+          if (event == "locations") continue
           let _loc = null;
-          if (json_data[key]["on"]["locations"]){
+          if (json_data[key]["on"]["locations"]) {
             _loc = json_data[key]["on"]["locations"][event]
           }
-          let temp_node = { key: key + '_' + event, name: event, category: "event", parent: key, events: new Array<any>(), entries: [], loc: _loc}
+          let temp_node = { key: key + '_' + event, name: event, category: "event", parent: key, events: new Array<any>(), entries: [], loc: _loc }
           let new_link = { "from": key, "to": key + '_' + event, "pid": "a" };
           // console.log(json_data[key]["on"][event])
           let conditions = json_data[key]["on"][event];
@@ -175,11 +201,11 @@ export class ManagerService {
             }
           }
           else {
-            temp_node.events.push({ pid: "default", name: "defult", actions: conditions['actions']})
+            let _actions = conditions['actions'] || [];
+            temp_node.events.push({ pid: "default", name: "defult", actions: _actions })
             let new_link = { "from": key + '_' + event, "to": conditions['target'], "pid": "default", parent: key, name: event };
             mynodeLinkArray.push(new_link)
           }
-
           mynodeLinkArray.push(new_link)
           mynodeDataArray.push(temp_node)
 
@@ -197,26 +223,25 @@ export class ManagerService {
           linkDataArray: mynodeLinkArray
         }
       );
-      console.log("temp_model")
-      console.log(self.model.toJson())
+
 
       subject.next(self.model);
     });
     return subject.asObservable();
   }
 
-  public load_static_file(){
+  public load_static_file() {
 
-    this.fromJson("../assets/example.json").subscribe((model=>  this.announceModel(model)))
+    this.fromJson("../assets/example.json").subscribe((model => this.announceModel(model)))
   }
 
-  public create_new_model(name:string){
+  public create_new_model(name: string) {
     this.model_list.push(new go.GraphLinksModel(
       {
         name: name,
         linkFromPortIdProperty: "pid",
         nodeDataArray: [
-          { name: "START", category: "state", },
+          { name: "START", category: "state", entries: [], exit: [] },
         ],
         linkDataArray: [
         ]

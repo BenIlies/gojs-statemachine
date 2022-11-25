@@ -21,8 +21,7 @@ export class AppComponent {
 
   @ViewChild('diagram') diagram:DiagramComponent;
 
-  public selectedNode!: go.Node;
-  public model: go.GraphLinksModel;
+
   public model_list: go.GraphLinksModel[];
   public new_model_toggle = true
   public new_model_name = "new model"
@@ -30,7 +29,6 @@ export class AppComponent {
 
 
   constructor(private ModelManager:ManagerService, private http: HttpClient) {
-    this.model = ModelManager.model ;
     this.model_list = this.ModelManager.model_list;
 
   }
@@ -43,12 +41,13 @@ export class AppComponent {
 
 
   public setSelectedNode(node: any) {
-    this.selectedNode = node;
+    // this.ModelManager.selectedNode = node;
+    this.ModelManager.selectNode(node)
+    // console.log(node.data)
+    // this.selectedNode = node.data;
+
   }
 
-  setModel(model:any){
-    this.model = model;
-  }
 
 
   select(n: number){
