@@ -41,7 +41,7 @@ export class ManagerService {
         ]
       }
     )
-    this.announceModel(this.model)
+    // this.announceModel(this.model)
 
 
     // this.model_list.push(this.model)
@@ -49,7 +49,7 @@ export class ManagerService {
     // this.fromJson("../assets/m2.json").subscribe((model) => { this.model_list.push(model) })
     // this.fromJson("../assets/m3.json").subscribe((model) => { this.model_list.push(model) })
     // this.fromJson("../assets/m4.json").subscribe((model) => { this.model_list.push(model) })
-    // this.fromJson("../assets/mainBK.json").subscribe((model) => { this.model_list.push(model) })
+    this.fromJson("../assets/mainBK.json").subscribe((model) => { this.model_list.push(model) })
     this.fromJson("../assets/dns_request.json").subscribe((model) => { this.model_list.push(model) })
 
 
@@ -285,32 +285,50 @@ export class ManagerService {
     ))
   }
 
+  // parse_function(txt: string) {
+  //   console.log("trying txt");
+  //   console.log(txt)
+  //   let init = txt.indexOf('(');
+
+  //   let func = txt.substr(0, init - 1);
+  //   let text = txt.substring(init - 1)
+  //   init = text.indexOf('(');
+  //   let parm = []
+  //   let i = 0
+  //   while (init>0) {
+  //     i++
+  //     console.log("trying txt");
+  //     console.log(text)
+  //     let fin = text.indexOf(')');
+  //     parm.push((text.substr(init + 1, fin - init - 1)))
+
+  //     text = text.substr(fin+1)
+  //     console.log(text)
+  //     if(txt){
+  //       init = text.indexOf("(");
+  //     }
+
+  //     console.log(init)
+  //   }
+  //   return { command: func, parm: parm , input_args: i}
+  // }
+
+
   parse_function(txt: string) {
     console.log("trying txt");
     console.log(txt)
     let init = txt.indexOf('(');
+    let fin = txt.indexOf(')');
 
     let func = txt.substr(0, init - 1);
-    let text = txt.substring(init - 1)
-    init = text.indexOf('(');
-    let parm = []
-    let i = 0
-    while (init>0) {
-      i++
-      console.log("trying txt");
-      console.log(text)
-      let fin = text.indexOf(')');
-      parm.push((text.substr(init + 1, fin - init - 1)))
+    let text = txt.substr(init+1,fin-init-1)
 
-      text = text.substr(fin+1)
-      console.log(text)
-      if(txt){
-        init = text.indexOf("(");
-      }
 
-      console.log(init)
-    }
-    return { command: func, parm: parm , input_args: i}
+    let parm = text.split(/(\s+)/).filter( function(e) { return e.trim().length > 0; } );
+    console.log(parm)
+
+
+    return { command: func, parm: parm , input_args: parm.length}
   }
 
   parse_actions(actions: any): any {

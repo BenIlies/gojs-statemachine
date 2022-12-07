@@ -30,12 +30,14 @@ export class AppComponent {
 
   constructor(private ModelManager:ManagerService, private http: HttpClient) {
     this.model_list = this.ModelManager.model_list;
+    console.log(this.model_list)
 
   }
 
   ngAfterViewInit() {
     // child is set
     // this.fromJson()
+
   }
 
 

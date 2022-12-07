@@ -33,6 +33,11 @@
                   <input type="text" class="form-control" name="{{i+e['command']+e['parm'][j]}}"
                     [(ngModel)]="e['parm'][j]">
                 </div>
+                <div style="flex-grow: 1" *ngFor="let item of [].constructor(e['output_args']); let j = index ">
+                  <label>output {{j+1}}</label>
+                  <input type="text" class="form-control" name="{{i+e['command']+e['parm'][j]}}"
+                    >
+                </div>
 
                 <div style="flex-grow: 1">
                   <mat-icon (click)="remove_item(i, data.entries)" aria-hidden="false" aria-label="Example home icon"

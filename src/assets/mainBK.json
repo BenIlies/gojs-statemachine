@@ -1,89 +1,91 @@
 {
-  "id": "DNS_REQUEST_HANDLER",
+  "id": "SETTING_UP_VARIABLES",
   "initial": "INITIALIZING",
   "states": {
     "INITIALIZING": {
       "on": {
         "STARTED": {
-          "target": "SETTING_UP_VARIABLES"
+          "target": "LOADING_FILE"
         }
       }
     },
-    "LISTENING": {
-      "entry": "wait_packet_signal queue timeout",
-      "on": {
-        "PACKET_AVAILABLE": {
-          "target": "HANDLING_DNS_REPLY",
-          "actions": "assign (queue) (queue)"
-        },
-        "TIMEOUT": {
-          "target": "SETTING_UP_TIMEOUT_RETURN"
-        }
-      }
-    },
-    "HANDLING_DNS_REPLY": {
+    "CREATING_PACKET_CLIENT": {
       "entry": [
-        "get_element (queue 0) (dns_reply)",
-        "pop queue",
-        "set (\"DNS_REQUEST_DONE\") (event)",
+        "create_TCP_packet (pkt)",
+        "set_random_int (100000 200000) (client_seq)",
+        "set_random_int (10000 20000) (client_port)",
+        "set_IP_dst (pkt server_ip) (pkt)",
+        "set_TCP_sport (pkt client_port) (pkt)",
+        "set_TCP_dport (pkt server_port) (pkt)",
+        "set_TCP_seq (pkt client_seq) (pkt)",
+        "set_TCP_flags (pkt syn) (pkt)",
+        "listen (queue)",
         "done"
       ],
       "on": {
         "DONE": {
           "target": "ENDING",
           "actions": [
-            "assign (dns_reply) (dns_reply)",
-            "assign (event) (event)"
-          ],
-          "cond": "condition (1)"
+            "assign (pkt) (pkt)",
+            "assign (queue) (queue)"
+          ]
+        }
+      }
+    },
+    "CREATING_PACKET_SERVER": {
+      "entry": [
+        "create_TCP_packet (pkt)",
+        "set_random_int (100000 200000) (server_seq)",
+        "set_TCP_sport (pkt server_port) (pkt)",
+        "set_TCP_seq (pkt server_seq) (pkt)",
+        "listen (queue)",
+        "done"
+      ],
+      "on": {
+        "DONE": {
+          "target": "ENDING",
+          "actions": [
+            "assign (pkt) (pkt)",
+            "assign (queue) (queue)"
+          ]
         }
       }
     },
     "ENDING": {
-      "entry": "return (event dns_reply)"
-    },
-    "SETTING_UP_VARIABLES": {
       "entry": [
-        "get_parameters (pkt queue)",
-        "set (4) (timeout)",
-        "send (pkt)"
-      ],
-      "on": {
-        "PACKET_SENT": [
-          {
-          "target": "LISTENING",
-          "actions": [
-            "assign (queue) (queue)",
-            "assign (timeout) (timeout)"
-          ],
-          "cond": "condition (1)"
-
-        },
-        {
-          "target": "SETTING_UP_TIMEOUT_RETURN",
-          "actions": [
-            "assign (queue) (queueueue)",
-            "assign (timeout) (timeout)"
-          ],
-          "cond": "condition (2)"
-        }
+        "set (DONE) (event)",
+        "return (event pkt queue)"
       ]
-      }
     },
-    "SETTING_UP_TIMEOUT_RETURN": {
+    "LOADING_FILE": {
       "entry": [
-        "set (\"TIMEOUT\") (event)",
-        "set (NULL) (dns_reply)",
+        "get_from_file (variables role) (role)",
+        "get_from_file (variables client) (client)",
+        "get_from_file (variables server) (server)",
+        "get_from_file (variables server_port) (server_port)",
+        "get_from_file (variables server_ip) (server_ip)",
+        "get_from_file (variables syn) (syn)",
+        "get_from_file (variables filter) (filter)",
+        "packet_filter (filter)",
         "done"
       ],
       "on": {
-        "DONE": {
-          "target": "ENDING",
-          "actions": [
-            "assign (dns_reply) (dns_reply)",
-            "assign (event) (event)"
-          ]
-        }
+        "DONE": [
+          {
+            "target": "CREATING_PACKET_CLIENT",
+            "cond": "equal (role client)",
+            "actions": [
+              "assign (server_ip) (server_ip)",
+              "assign (server_port) (server_port)",
+              "assign (syn) (syn)"
+            ]
+          },
+          {
+            "target": "CREATING_PACKET_SERVER",
+            "cond": "equal (role server)",
+            "actions": "assign (server_port) (server_port)"
+          }
+        ]
       }
     }
   }

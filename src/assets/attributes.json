@@ -274,34 +274,6 @@
           "output_args": 0,
           "optional_inputs": false,
           "optional_outputs": false
-      },
-      {
-          "command": "gt",
-          "input_args": 2,
-          "output_args": 0,
-          "optional_inputs": false,
-          "optional_outputs": false
-      },
-      {
-          "command": "gte",
-          "input_args": 2,
-          "output_args": 0,
-          "optional_inputs": false,
-          "optional_outputs": false
-      },
-      {
-          "command": "it",
-          "input_args": 2,
-          "output_args": 0,
-          "optional_inputs": false,
-          "optional_outputs": false
-      },
-      {
-          "command": "ite",
-          "input_args": 2,
-          "output_args": 0,
-          "optional_inputs": false,
-          "optional_outputs": false
       }
   ]
 }

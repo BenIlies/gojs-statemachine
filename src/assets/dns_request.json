@@ -1,0 +1,104 @@
+{
+	"states": {
+		"INITIALIZING": {
+			"entry": [],
+			"exit": [
+				"exit_function1 (input)",
+				"exit_function1 (wow)"
+			],
+			"on": {
+				"locations": {
+					"STARTED": "196.99999999999994 0"
+				},
+				"STARTED": {
+					"target": "SETTING_UP_VARIABLES"
+				}
+			},
+			"loc": "0 7.862268323128575"
+		},
+		"LISTENING": {
+			"entry": [
+				"wait_packet_signal (queue) (timeout)"
+			],
+			"exit": [
+				"exit_function (you need parenthesis)"
+			],
+			"on": {
+				"locations": {
+					"PACKET_AVAILABLE": "1089.9282023208345 39.71108398437499",
+					"TIMEOUT": "1089.9282023208345 175"
+				},
+				"PACKET_AVAILABLE": {
+					"target": "HANDLING_DNS_REPLY"
+				},
+				"TIMEOUT": {
+					"target": "SETTING_UP_TIMEOUT_RETURN"
+				}
+			},
+			"loc": "838.5776163833343 47.823352307503576"
+		},
+		"HANDLING_DNS_REPLY": {
+			"entry": [
+				"get_element (queue 0) (dns_reply)",
+				"pop queue",
+				"set (\"DNS_REQUEST_DONE\") (event)",
+				"done"
+			],
+			"exit": [],
+			"on": {
+				"locations": {
+					"DONE": "1577.1722412253926 29.42216796874999"
+				},
+				"DONE": {
+					"target": "ENDING"
+				}
+			},
+			"loc": "1296.4510498191426 12.28443629187857"
+		},
+		"ENDING": {
+			"entry": [
+				"return (event dns_reply)"
+			],
+			"exit": [],
+			"on": {
+				"locations": {}
+			},
+			"loc": "1817.0476277862003 118.15118433875358"
+		},
+		"SETTING_UP_VARIABLES": {
+			"entry": [
+				"get_parameters (pkt queue)",
+				"set (4) (timeout)",
+				"send (pkt)"
+			],
+			"exit": [],
+			"on": {
+				"locations": {
+					"PACKET_SENT": "626.1748860725264 4.422167968749996"
+				},
+				"PACKET_SENT": {
+					"target": "LISTENING"
+				}
+			},
+			"loc": "403.5228474983078 22.573352307503576"
+		},
+		"SETTING_UP_TIMEOUT_RETURN": {
+			"entry": [
+				"set (\"TIMEOUT\") (event)",
+				"set (NULL) (dns_reply)",
+				"done"
+			],
+			"exit": [],
+			"on": {
+				"locations": {
+					"DONE": "1577.1722412253926 154.42216796875"
+				},
+				"DONE": {
+					"target": "ENDING"
+				}
+			},
+			"loc": "1302.040985121877 197.57335230750357"
+		}
+	},
+	"id": "DNS_REQUEST_HANDLER2"
+}

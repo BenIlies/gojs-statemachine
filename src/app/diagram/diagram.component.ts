@@ -173,12 +173,21 @@ export class DiagramComponent implements OnInit {
         },
         new go.Binding("text", "", function(data)
         {
-          var r = ""
-          for (let index = 0; index < data.parm.length; index++) {
-            r = r.concat("("+ data.parm[index] +")"+  " ")
+          if(data){
+          var r = "("
 
+            for (let index = 0; index < data.parm.length; index++) {
+              if (index==data.parm.length-1) {
+                r = r.concat(data.parm[index])
+              }
+              else{
+                r = r.concat(data.parm[index] +  " ")
+
+              }
+
+            }
+            return data.command.concat(" " + r+ ")");
           }
-          return data.command.concat(" " + r);
         })
       )
 
@@ -201,12 +210,12 @@ export class DiagramComponent implements OnInit {
         },
         new go.Binding("text", "", function(data)
         {
-          var r = ""
+          var r = "("
           for (let index = 0; index < data.parm.length; index++) {
-            r = r.concat("("+ data.parm[index] +")"+  " ")
+            r = r.concat( data.parm[index] + " ")
 
           }
-          return data.command.concat(" " + r);
+          return data.command.concat(" " + r+ ")");
         })
       )
     )
@@ -222,7 +231,7 @@ export class DiagramComponent implements OnInit {
           $(go.Shape,
             {
               // locationSpot: go.Spot.Top,
-              fill: "#db5431",
+              fill: "#AE2012",
               fromLinkable: true,
               fromLinkableDuplicates: false,
               toMaxLinks: 1, fromMaxLinks: 1,
@@ -240,12 +249,12 @@ export class DiagramComponent implements OnInit {
             },
             new go.Binding("text", "", function(data)
             {
-              var r = ""
+              var r = "("
               for (let index = 0; index < data.parm.length; index++) {
-                r = r.concat("("+ data.parm[index] +")"+  " ")
+                r = r.concat( data.parm[index] +  " ")
 
               }
-              return data.command.concat(" " + r);
+              return data.command.concat(" " + r +")");
             })
           )
         ),
@@ -296,7 +305,7 @@ export class DiagramComponent implements OnInit {
             $(go.Shape,
               {
                 // locationSpot: go.Spot.Top,
-                fill: "#db5461",
+                fill: "#001219",
                 strokeWidth: 0.5,
                 portId: "",
                 toLinkable: true,
@@ -327,12 +336,13 @@ export class DiagramComponent implements OnInit {
             $(go.Panel, "Auto",
               $(go.Shape,
                 {
-                  fill: "#fa2dff",
+                  fill: "#0A9396",
                   strokeWidth: 0,
                 }),
               $(go.TextBlock,
                 {
                   text: "Entry Functions:",
+                  stroke: "white",
                   margin: new go.Margin(4, 4, 2, 4),
                   isMultiline: false,
                   editable: false
@@ -359,12 +369,13 @@ export class DiagramComponent implements OnInit {
             $(go.Panel, "Auto",
               $(go.Shape,
                 {
-                  fill: "#fafd3f",
+                  fill: "#94D2BD",
                   strokeWidth: 0,
                 }),
               $(go.TextBlock,
                 {
                   text: "Exit Functions:",
+                  stroke: "black",
                   margin: new go.Margin(4, 4, 2, 4),
                   isMultiline: false,
                   editable: false
