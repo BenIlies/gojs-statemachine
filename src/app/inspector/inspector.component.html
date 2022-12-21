@@ -17,40 +17,40 @@
     <div class="form-group">
       <label>Select {{input_type}} </label>
 
-          <!--  Entry functions for states
+      <!--  Entry functions for states
        -->
       <div *ngIf="data.category == 'state'">
         <span>Entry Functions</span>
 
         <mat-nav-list>
 
-            <div matLine *ngFor="let e of data.entries; let i = index">
-              <div class="flex-container">
-                <div style="flex-grow: 6">
-                  <span>{{ e['command'] }}</span>
-                </div>
-
-                <!-- input parameters fields  -->
-                <div style="flex-grow: 1" *ngFor="let item of [].constructor(e['input_args']); let j = index ">
-                  <label>input {{j+1}}</label>
-                  <input type="text" class="form-control" name="{{i+e['command']+e['input_parm'][j]}}"
-                    [(ngModel)]="e['input_parm'][j]">
-                </div>
-
-                <!-- output parameters fields  -->
-                <!-- <div style="flex-grow: 1" *ngFor="let item of [].constructor(e['output_args']); let j = index ">
-                  <label>output {{j+1}}</label>
-                  <input type="text" class="form-control" name="{{i+e['command']+e['output_parm'][j]}}"
-                  [(ngModel)]="e['output_parm'][j]" >
-                </div> -->
-
-                <div style="flex-grow: 1">
-                  <mat-icon (click)="remove_item(i, data.entries)" aria-hidden="false" aria-label="Example home icon"
-                    fontIcon="delete forever">remove</mat-icon>
-                </div>
+          <div matLine *ngFor="let e of data.entries; let i = index">
+            <div class="flex-container">
+              <div style="flex-grow: 6">
+                <span>{{ e['command'] }}</span>
               </div>
 
+              <!-- input parameters fields  -->
+              <div style="flex-grow: 1" *ngFor="let item of [].constructor(e['input_args']); let j = index ">
+                <label>input {{j+1}}</label>
+                <input type="text" class="form-control" name="{{i+e['command']+e['input_parm'][j]}}"
+                  [(ngModel)]="e['input_parm'][j]">
+              </div>
+
+              <!-- output parameters fields  -->
+              <div style="flex-grow: 1" *ngFor="let item of [].constructor(e['output_args']); let j = index ">
+                <label>output {{j+1}}</label>
+                <input type="text" class="form-control" name="{{i+e['command']+e['output_parm'][j]}}"
+                  [(ngModel)]="e['output_parm'][j]">
+              </div>
+
+              <div style="flex-grow: 1">
+                <mat-icon (click)="remove_item(i, data.entries)" aria-hidden="false" aria-label="Example home icon"
+                  fontIcon="delete forever">remove</mat-icon>
+              </div>
             </div>
+
+          </div>
 
 
 
@@ -70,29 +70,37 @@
 
       <!--  exsit functions for states
        -->
-       <div *ngIf="data.category == 'state'">
+      <div *ngIf="data.category == 'state'">
         <span>Exit Functions</span>
         <mat-nav-list>
 
-            <div matLine *ngFor="let e of data.exit; let i = index">
-              <div class="flex-container">
-                <div style="flex-grow: 6">
-                  <span>{{ e['command'] }}</span>
-                </div>
-
-                <div style="flex-grow: 1" *ngFor="let item of [].constructor(e['input_args']); let j = index ">
-                  <label>input {{i+1}}</label>
-                  <input type="text" class="form-control" name="{{e['command']+e['input_parm'][j]}}"
-                    [(ngModel)]="e['input_parm'][j]">
-                </div>
-
-                <div style="flex-grow: 1">
-                  <mat-icon (click)="remove_item(i, data.entries)" aria-hidden="false" aria-label="Example home icon"
-                    fontIcon="delete forever">remove</mat-icon>
-                </div>
+          <div matLine *ngFor="let e of data.exit; let i = index">
+            <div class="flex-container">
+              <div style="flex-grow: 6">
+                <span>{{ e['command'] }}</span>
               </div>
 
+              <!-- input parameters fields  -->
+              <div style="flex-grow: 1" *ngFor="let item of [].constructor(e['input_args']); let j = index ">
+                <label>input {{i+1}}</label>
+                <input type="text" class="form-control" name="{{e['command']+e['input_parm'][j]}}"
+                  [(ngModel)]="e['input_parm'][j]">
+              </div>
+
+              <!-- output parameters fields  -->
+              <div style="flex-grow: 1" *ngFor="let item of [].constructor(e['output_args']); let j = index ">
+                <label>input {{i+1}}</label>
+                <input type="text" class="form-control" name="{{e['command']+e['output_parm'][j]}}"
+                  [(ngModel)]="e['output_parm'][j]">
+              </div>
+
+              <div style="flex-grow: 1">
+                <mat-icon (click)="remove_item(i, data.entries)" aria-hidden="false" aria-label="Example home icon"
+                  fontIcon="delete forever">remove</mat-icon>
+              </div>
             </div>
+
+          </div>
 
 
 
@@ -129,7 +137,11 @@
                   </div>
 
                   <!-- output parms  -->
-                  <!-- TODO: output -->
+                  <div style="flex-grow: 0.5" *ngFor="let item of [].constructor(e['output_args']); let i = index ">
+                    <label>input {{i+1}}</label>
+                    <input type="text" class="form-control" name="{{e['command']+e['output_parm'][i]}}"
+                      [(ngModel)]="e['output_parm'][i]">
+                  </div>
 
                   <div style="flex-grow: 1">
                     <mat-icon (click)="remove_item(i, data.events)" aria-hidden="false" aria-label="Example home icon"
@@ -150,11 +162,18 @@
                         <span matLine>{{ a['command'] }}</span>
                       </div>
 
+                      <!-- input parms  -->
                       <div style="flex-grow: 0.5" *ngFor="let item of [].constructor(a['input_args']); let j = index ">
                         <label>input {{j+1}}</label>
-
                         <input type="text" class="form-control" name="{{a['command']+a['input_parm'][j]}}"
                           [(value)]="a['input_parm'][j]" [(ngModel)]="a['input_parm'][j]">
+                      </div>
+
+                      <!-- output parms  -->
+                      <div style="flex-grow: 0.5" *ngFor="let item of [].constructor(a['output_args']); let j = index ">
+                        <label>input {{j+1}}</label>
+                        <input type="text" class="form-control" name="{{a['command']+a['output_parm'][j]}}"
+                          [(value)]="a['output_parm'][j]" [(ngModel)]="a['output_parm'][j]">
                       </div>
 
                       <div style="flex-grow: 1">
@@ -180,9 +199,6 @@
 
               </div>
 
-
-
-
             </mat-list-item>
 
           </mat-nav-list>
@@ -197,10 +213,7 @@
               </mat-option>
             </mat-select>
           </mat-form-field>
-
         </div>
-
-
 
 
       </div>

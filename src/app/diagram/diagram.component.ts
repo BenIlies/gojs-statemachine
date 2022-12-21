@@ -174,19 +174,16 @@ export class DiagramComponent implements OnInit {
         new go.Binding("text", "", function(data)
         {
           if(data){
-          var r = "("
-
+            var r = "("
             for (let index = 0; index < data.input_parm.length; index++) {
-              if (index==data.input_parm.length-1) {
-                r = r.concat(data.input_parm[index])
-              }
-              else{
-                r = r.concat(data.input_parm[index] +  " ")
-
-              }
-
+              r = r.concat( data.input_parm[index] +  " ")
             }
-            return data.command.concat(" " + r+ ")");
+            r = r.trim() +") ("
+            for (let index = 0; index < data.output_parm.length; index++) {
+              r = r.concat( data.output_parm[index] +  " ")
+            }
+            r = " " + r.trim() +")"
+            return data.command.concat(r);
           }
         })
       )
@@ -212,10 +209,14 @@ export class DiagramComponent implements OnInit {
         {
           var r = "("
           for (let index = 0; index < data.input_parm.length; index++) {
-            r = r.concat( data.input_parm[index] + " ")
-
+            r = r.concat( data.input_parm[index] +  " ")
           }
-          return data.command.concat(" " + r+ ")");
+          r = r.trim() +") ("
+          for (let index = 0; index < data.output_parm.length; index++) {
+            r = r.concat( data.output_parm[index] +  " ")
+          }
+          r = " " + r.trim() +")"
+          return data.command.concat(r);
         })
       )
     )
@@ -252,9 +253,13 @@ export class DiagramComponent implements OnInit {
               var r = "("
               for (let index = 0; index < data.input_parm.length; index++) {
                 r = r.concat( data.input_parm[index] +  " ")
-
               }
-              return data.command.concat(" " + r +")");
+              r = r.trim() +") ("
+              for (let index = 0; index < data.output_parm.length; index++) {
+                r = r.concat( data.output_parm[index] +  " ")
+              }
+              r = " " + r.trim() +")"
+              return data.command.concat(r);
             })
           )
         ),

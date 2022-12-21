@@ -112,6 +112,8 @@ export class ManagerService {
         if (item['pid'] == 'default') {
           json_obj.states[item['parent']]["on"][item['name']] = { target: item['to'], }
         } else {
+          console.log('frommm')
+          console.log(item['from'])
           let source_node = this.model!.findNodeDataForKey(item['from'])
           let temp_cond = ""
           for (let e of source_node!['events']) {
@@ -163,9 +165,10 @@ export class ManagerService {
               let command = atrib['command']
               let input_parm = atrib['input_parm']
               let input_args = atrib['input_args']
-              // for each action extract func and attrib
+              let output_parm = atrib['output_parm']
+              let output_args = atrib['output_args']
 
-              entries.push({ name: command, command: command, input_parm: input_parm, input_args: input_args})
+              entries.push({ name: command, command: command, input_parm: input_parm, input_args: input_args, output_parm: output_parm, output_args: output_args})
             }
           }
           else {
@@ -174,8 +177,10 @@ export class ManagerService {
             let command = atrib['command']
             let input_parm = atrib['input_parm']
             let input_args = atrib['input_args']
+            let output_parm = atrib['output_parm']
+            let output_args = atrib['output_args']
 
-            entries.push({ name: command, command: command, input_parm: input_parm, input_args: input_args})
+            entries.push({ name: command, command: command, input_parm: input_parm, input_args: input_args, output_parm: output_parm, output_args: output_args})
           }
         }
 
@@ -190,10 +195,11 @@ export class ManagerService {
               let command = atrib['command']
               let input_parm = atrib['input_parm']
               let input_args = atrib['input_args']
-
+              let output_parm = atrib['output_parm']
+              let output_args = atrib['output_args']
               // for each action extract func and attrib
 
-              _exit.push({ name: command, command: command, input_parm: input_parm, input_args: input_args})
+              _exit.push({ name: command, command: command, input_parm: input_parm, input_args: input_args, output_parm: output_parm, output_args: output_args})
             }
           }
           else {
@@ -201,10 +207,11 @@ export class ManagerService {
             let command = atrib['command']
             let input_parm = atrib['input_parm']
             let input_args = atrib['input_args']
-
+            let output_parm = atrib['output_parm']
+            let output_args = atrib['output_args']
             // for each action extract func and attrib
 
-            _exit.push({ name: command, command: command, input_parm: input_parm, input_args: input_args})
+            _exit.push({ name: command, command: command, input_parm: input_parm, input_args: input_args, output_parm: output_parm, output_args: output_args})
           }
         }
 
@@ -229,13 +236,16 @@ export class ManagerService {
               let atrib = this.parse_function(cond['cond'])
               let condition = atrib['command']
               let input_parm = atrib['input_parm']
+              let input_args = atrib['input_args']
+              let output_parm = atrib['output_parm']
+              let output_args = atrib['output_args']
               // for each action extract func and attrib
               console.log(cond)
 
               console.log(cond['actions'])
               let _actions = this.parse_actions(cond['actions']) || [];
               console.log(_actions)
-              temp_node.events.push({ pid: cond['cond'], name: condition, command: condition, input_parm: input_parm,  actions: _actions })
+              temp_node.events.push({ pid: cond['cond'], name: condition, command: condition, input_parm: input_parm, input_args: input_args, output_parm: output_parm, output_args: output_args, actions: _actions })
               let new_link = { "from": key + '_' + event, "to": cond['target'], "pid": cond['cond'], parent: key, name: event };
               mynodeLinkArray.push(new_link)
             }
@@ -244,7 +254,7 @@ export class ManagerService {
             // extract the function and the attrib
             // for each action extract func and attrib
             let _actions = this.parse_actions(conditions['actions']) || [];
-            temp_node.events.push({ pid: "default", name: "defult", command: 'default', input_parm: [], actions: _actions })
+            temp_node.events.push({ pid: "default", name: "defult", command: 'default', input_parm: [], input_args: 0, output_parm: [], output_args: 0, actions: _actions })
             let new_link = { "from": key + '_' + event, "to": conditions['target'], "pid": "default", parent: key, name: event };
             mynodeLinkArray.push(new_link)
           }
