@@ -161,19 +161,21 @@ export class ManagerService {
               console.log(json_data[key]["entry"][e])
               let atrib = this.parse_function(json_data[key]["entry"][e])
               let command = atrib['command']
-              let parm = atrib['parm']
+              let input_parm = atrib['input_parm']
+              let input_args = atrib['input_args']
               // for each action extract func and attrib
 
-              entries.push({ name: command, command: command, parm: parm})
+              entries.push({ name: command, command: command, input_parm: input_parm, input_args: input_args})
             }
           }
           else {
             // extract the function and the attrib
             let atrib = this.parse_function(json_data[key]["entry"]["entry"])
             let command = atrib['command']
-            let parm = atrib['parm']
+            let input_parm = atrib['input_parm']
+            let input_args = atrib['input_args']
 
-            entries.push({ name: command, command: command, parm: parm })
+            entries.push({ name: command, command: command, input_parm: input_parm, input_args: input_args})
           }
         }
 
@@ -186,19 +188,23 @@ export class ManagerService {
 
               let atrib = this.parse_function(json_data[key]["exit"][e])
               let command = atrib['command']
-              let parm = atrib['parm']
+              let input_parm = atrib['input_parm']
+              let input_args = atrib['input_args']
+
               // for each action extract func and attrib
 
-              _exit.push({ name: command, command: command, parm: parm})
+              _exit.push({ name: command, command: command, input_parm: input_parm, input_args: input_args})
             }
           }
           else {
             let atrib = this.parse_function(json_data[key]["exit"])
             let command = atrib['command']
-            let parm = atrib['parm']
+            let input_parm = atrib['input_parm']
+            let input_args = atrib['input_args']
+
             // for each action extract func and attrib
 
-            _exit.push({ name: command, command: command, parm: parm})
+            _exit.push({ name: command, command: command, input_parm: input_parm, input_args: input_args})
           }
         }
 
@@ -222,14 +228,14 @@ export class ManagerService {
               // extract the function and the attrib
               let atrib = this.parse_function(cond['cond'])
               let condition = atrib['command']
-              let parm = atrib['parm']
+              let input_parm = atrib['input_parm']
               // for each action extract func and attrib
               console.log(cond)
 
               console.log(cond['actions'])
               let _actions = this.parse_actions(cond['actions']) || [];
               console.log(_actions)
-              temp_node.events.push({ pid: cond['cond'], name: condition, command: condition, parm: parm,  actions: _actions })
+              temp_node.events.push({ pid: cond['cond'], name: condition, command: condition, input_parm: input_parm,  actions: _actions })
               let new_link = { "from": key + '_' + event, "to": cond['target'], "pid": cond['cond'], parent: key, name: event };
               mynodeLinkArray.push(new_link)
             }
@@ -238,7 +244,7 @@ export class ManagerService {
             // extract the function and the attrib
             // for each action extract func and attrib
             let _actions = this.parse_actions(conditions['actions']) || [];
-            temp_node.events.push({ pid: "default", name: "defult", command: 'default', parm: [], actions: _actions })
+            temp_node.events.push({ pid: "default", name: "defult", command: 'default', input_parm: [], actions: _actions })
             let new_link = { "from": key + '_' + event, "to": conditions['target'], "pid": "default", parent: key, name: event };
             mynodeLinkArray.push(new_link)
           }
@@ -319,16 +325,27 @@ export class ManagerService {
     console.log(txt)
     let init = txt.indexOf('(');
     let fin = txt.indexOf(')');
+    if (init>1) {
+      let func = txt.substring(0, init - 1).trim();
+      // getting input ()
+      let input = txt.substring(init+1,fin)
+      // get output sub text ()
+      let output = txt.substring(fin+1)
+      init = output.indexOf('(');
+      fin = output.indexOf(')');
+      output = output.substring(init+1,fin)
+      let input_parm = input.split(/(\s+)/).filter( function(e) { return e.trim().length > 0; } );
+      let output_parm = output.split(/(\s+)/).filter( function(e) { return e.trim().length > 0; } );
 
-    let func = txt.substr(0, init - 1);
-    let text = txt.substr(init+1,fin-init-1)
+      console.log({ command: func, input_parm: input_parm , input_args: input_parm.length, output_parm: output_parm , output_args: output_parm.length})
 
 
-    let parm = text.split(/(\s+)/).filter( function(e) { return e.trim().length > 0; } );
-    console.log(parm)
-
-
-    return { command: func, parm: parm , input_args: parm.length}
+      return { command: func, input_parm: input_parm , input_args: input_parm.length, output_parm: output_parm , output_args: output_parm.length}
+    }
+    else{
+      let func = txt.trim();
+      return { command: func, input_parm: [] , input_args: 0, output_parm: [] , output_args: 0}
+    }
   }
 
   parse_actions(actions: any): any {

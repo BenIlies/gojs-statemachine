@@ -154,7 +154,8 @@ export class InspectorComponent implements OnInit {
 
   action_selected(action_selected: any) {
     let action = action_selected.value
-    action["parm"] = []
+    action["input_parm"] = []
+    action["output_parm"] = []
     action["pid"] = this.data.name + action["command"]
 
     this.data.entries.push( action)
@@ -162,7 +163,8 @@ export class InspectorComponent implements OnInit {
 
   action_selected_for_exit(action_selected: any) {
     let action = structuredClone(action_selected.value)
-    action["parm"] = []
+    action["input_parm"] = []
+    action["output_parm"] = []
     action["pid"] = this.data.name + action["command"]
 
     this.data.exit.push( action)
@@ -171,7 +173,8 @@ export class InspectorComponent implements OnInit {
   condition_selected(cond_selected: any) {
     let cond = structuredClone(cond_selected.value)
     cond["actions"] = []
-    cond["parm"] = []
+    cond["input_parm"] = []
+    cond["output_parm"] = []
     cond["pid"] = this.data.name + cond["command"]+(this.data.events.length +1).toString()
 
     // console.log(cond['input_args'])
@@ -183,7 +186,8 @@ export class InspectorComponent implements OnInit {
     // console.log('selected event: ')
     // console.log(i)
     let action = structuredClone(action_selected.value)
-    action["parm"] = []
+    action["input_parm"] = []
+    action["output_parm"] = []
     // console.log(action['input_args'])
     // for (let index = 0; index < parseInt(action['input_args']); index++) {
     //   // console.log("this shit is ..")
