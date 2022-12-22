@@ -32,7 +32,7 @@ export class NavbarComponent implements OnInit {
   }
 
   export(){
-    let data = this.ModelManager.to_json(this.model.toJson());
+    let data = this.ModelManager.to_json(this.model);
     var jsonObj = JSON.parse(data);
     var jsonPretty = JSON.stringify(jsonObj, null, '\t');
     var myWindow = window.open("data:text/json", '_blank');

@@ -75,11 +75,99 @@ export class ManagerService {
   }
 
 
-  to_json(model_data: any) {
+  // to_json(model_data: any) {
+  //   // return model_data
+  //   model_data = JSON.parse(model_data)
+  //   // let json_obj = {states: new Array<any>()}
+  //   let json_obj = { states: {} }
+  //   json_obj['id'] = model_data["name"]
+
+
+  //   for (let item of model_data["nodeDataArray"]) {
+  //     let entries = []
+  //     let _exit = []
+  //     if (item['category'] == 'state') {
+
+
+
+  //       for (let e of item['entries']) {
+
+  //         entries.push(e["name"])
+  //       }
+  //       for (let e of item['exit']) {
+
+  //         _exit.push(e["name"])
+  //       }
+  //       json_obj.states[item['name']] = { entry: entries, exit: _exit, on: { locations: {} }, loc: item["loc"] }
+  //     }
+  //   }
+  //   for (let item of model_data["nodeDataArray"]) {
+  //     if (item['category'] == 'event') {
+  //       json_obj.states[item['parent']]["on"][item['name']] = {}
+  //       json_obj.states[item['parent']]["on"]["locations"][item['name']] = item["loc"]
+  //     }
+  //   }
+  //   for (let item of model_data["linkDataArray"]) {
+  //     if (json_obj.states[item['to']]) {
+  //       if (item['pid'] == 'default') {
+  //         json_obj.states[item['parent']]["on"][item['name']] = { target: item['to'], }
+  //       } else {
+  //         console.log('frommm')
+  //         console.log(item['from'])
+  //         let source_node = this.model!.findNodeDataForKey(item['from'])
+  //         let temp_cond = ""
+  //         for (let e of source_node!['events']) {
+
+  //           if (e!['pid'] == item['pid']) {
+  //             temp_cond = e['name']
+  //           }
+
+  //         }
+
+  //         if (Object.prototype.toString.call(json_obj.states[item['parent']]["on"][item['name']]) === '[object Array]') {
+  //           json_obj.states[item['parent']]["on"][item['name']].push(
+  //             { cond: temp_cond, target: item['to'], loc: item["loc"] }
+  //           )
+  //         }
+  //         else {
+  //           json_obj.states[item['parent']]["on"][item['name']] = [{ cond: temp_cond, target: item['to'] }]
+  //         }
+
+  //       }
+  //     }
+
+  //   }
+  //   return JSON.stringify(json_obj);
+  // }
+
+  flatten_functions(action: any){
+    // this method get state or event action and flatten it into the form "function_name (input_par1 input_par2 ..) (output_par1, ..) "
+    let function_name = action['command']
+    let input_pars = ""
+    let output_pars = ""
+    if (action['input_parm'].length >0 ){
+      for (let parm of action['input_parm'] ){
+        console.log(parm)
+        input_pars = input_pars+" "+ parm
+      }
+      input_pars = "(" +input_pars.trim() + ")"
+    }
+    if (action['output_parm'].length >0 ){
+      for (let parm of action['output_parm'] ){
+        output_pars = output_pars+" "+ parm
+      }
+      output_pars = "(" +output_pars.trim() + ")"
+    }
+
+    return function_name + " " + input_pars+" "+ output_pars
+  }
+
+
+  to_json(model: any) {
     // return model_data
-    model_data = JSON.parse(model_data)
+    var model_data = JSON.parse(model.toJson())
     // let json_obj = {states: new Array<any>()}
-    let json_obj = { states: {} }
+    var json_obj = { states: {} }
     json_obj['id'] = model_data["name"]
 
 
@@ -87,16 +175,14 @@ export class ManagerService {
       let entries = []
       let _exit = []
       if (item['category'] == 'state') {
-
-
-
+        console.log(item['entries'])
         for (let e of item['entries']) {
 
-          entries.push(e["name"])
+          entries.push(this.flatten_functions(e))
         }
         for (let e of item['exit']) {
 
-          _exit.push(e["name"])
+          _exit.push(this.flatten_functions(e))
         }
         json_obj.states[item['name']] = { entry: entries, exit: _exit, on: { locations: {} }, loc: item["loc"] }
       }
@@ -114,12 +200,14 @@ export class ManagerService {
         } else {
           console.log('frommm')
           console.log(item['from'])
-          let source_node = this.model!.findNodeDataForKey(item['from'])
+          let source_node = model.findNodeDataForKey(item['from'])
+          console.log('node')
+          console.log(source_node)
           let temp_cond = ""
           for (let e of source_node!['events']) {
 
             if (e!['pid'] == item['pid']) {
-              temp_cond = e['name']
+              temp_cond = this.flatten_functions(e)
             }
 
           }

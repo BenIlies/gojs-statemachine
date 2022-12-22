@@ -32,7 +32,26 @@ const entryTemplate =
   );
 
 
+  function flatten_function_args(action: any){
+    let function_name = action['command']
+    let input_pars = ""
+    let output_pars = ""
+    if (action['input_parm'].length >0 ){
+      for (let parm of action['input_parm'] ){
+        console.log(parm)
+        input_pars = input_pars+" "+ parm
+      }
+      input_pars = "(" +input_pars.trim() + ")"
+    }
+    if (action['output_parm'].length >0 ){
+      for (let parm of action['output_parm'] ){
+        output_pars = output_pars+" "+ parm
+      }
+      output_pars = "(" +output_pars.trim() + ")"
+    }
 
+    return function_name + " " + input_pars+" "+ output_pars
+  }
 
 
 
@@ -44,6 +63,7 @@ const entryTemplate =
 export class DiagramComponent implements OnInit {
 
   public diagram: go.Diagram;
+  self = this;
 
   @Input()
   public model: go.Model | null = null;
@@ -95,7 +115,7 @@ export class DiagramComponent implements OnInit {
       node_category = "event"
       node_label = "New Event"
     }
-    var toData = { name: node_label, loc: "", category: node_category };
+    var toData = { name: node_label, loc: "", category: node_category, events: [], entries: [], exit:[] };
     var p = fromNode.location.copy();
     p.x += 200;
     toData.loc = go.Point.stringify(p);  // the "loc" property is a string, not a Point object
@@ -171,24 +191,11 @@ export class DiagramComponent implements OnInit {
           isMultiline: false,
           editable: true
         },
-        new go.Binding("text", "", function(data)
-        {
-          if(data){
-            var r = "("
-            for (let index = 0; index < data.input_parm.length; index++) {
-              r = r.concat( data.input_parm[index] +  " ")
-            }
-            r = r.trim() +") ("
-            for (let index = 0; index < data.output_parm.length; index++) {
-              r = r.concat( data.output_parm[index] +  " ")
-            }
-            r = " " + r.trim() +")"
-            return data.command.concat(r);
-          }
-        })
+        new go.Binding("text", "", function(data) {return flatten_function_args(data)})
       )
 
     );
+
 
 
   actionTemplate =
@@ -205,19 +212,7 @@ export class DiagramComponent implements OnInit {
           isMultiline: false,
           stroke: "black"
         },
-        new go.Binding("text", "", function(data)
-        {
-          var r = "("
-          for (let index = 0; index < data.input_parm.length; index++) {
-            r = r.concat( data.input_parm[index] +  " ")
-          }
-          r = r.trim() +") ("
-          for (let index = 0; index < data.output_parm.length; index++) {
-            r = r.concat( data.output_parm[index] +  " ")
-          }
-          r = " " + r.trim() +")"
-          return data.command.concat(r);
-        })
+        new go.Binding("text", "", function(data) {return flatten_function_args(data)})
       )
     )
     ;
@@ -248,19 +243,7 @@ export class DiagramComponent implements OnInit {
               font: "bold 10pt sans-serif",
               isMultiline: false,
             },
-            new go.Binding("text", "", function(data)
-            {
-              var r = "("
-              for (let index = 0; index < data.input_parm.length; index++) {
-                r = r.concat( data.input_parm[index] +  " ")
-              }
-              r = r.trim() +") ("
-              for (let index = 0; index < data.output_parm.length; index++) {
-                r = r.concat( data.output_parm[index] +  " ")
-              }
-              r = " " + r.trim() +")"
-              return data.command.concat(r);
-            })
+            new go.Binding("text", "", function(data) {return flatten_function_args(data)})
           )
         ),
 
