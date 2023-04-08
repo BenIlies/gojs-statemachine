@@ -1,1 +1,158 @@
-{"states":{"INITIALIZING":{"entry":[null],"on":{"locations":{"STARTED":"196.99999999999994 27.676647692496424"},"STARTED":{"target":"SETTING_UP_VARIABLES"}},"loc":"0 30.866748046875003"},"LISTENING":{"entry":["wait_packet_signal queue timeout"],"on":{"locations":{"PACKET_AVAILABLE":"1084.0483195083345 17.387731676871418","TIMEOUT":"1084.0483195083345 152.67664769249643"},"PACKET_AVAILABLE":{"target":"HANDLING_DNS_REPLY"},"TIMEOUT":{"target":"SETTING_UP_TIMEOUT_RETURN"}},"loc":"832.6977335708345 55.866748046875"},"HANDLING_DNS_REPLY":{"entry":["get_element (queue 0) (dns_reply)","pop queue","set (\"DNS_REQUEST_DONE\") (event)","done"],"on":{"locations":{"DONE":"1571.2923584128926 32.09881566124642"},"DONE":{"target":"ENDING"}},"loc":"1290.5711670066426 0"},"ENDING":{"entry":["return (event dns_reply)"],"on":{"locations":{}},"loc":"1811.1677449737003 130.866748046875"},"SETTING_UP_VARIABLES":{"entry":["get_parameters (pkt queue)","set (4) (timeout)","send (pkt)"],"on":{"locations":{"PACKET_SENT":"626.1748860725266 42.387731676871425"},"PACKET_SENT":{"target":"LISTENING"}},"loc":"403.5228474983078 35.288916015625"},"SETTING_UP_TIMEOUT_RETURN":{"entry":["set (\"TIMEOUT\") (event)","set (NULL) (dns_reply)","done"],"on":{"locations":{"DONE":"1571.2923584128926 157.09881566124642"},"DONE":{"target":"ENDING"}},"loc":"1296.161102309377 160.288916015625"}},"id":"DNS_REQUEST_HANDLER2"}
+{
+  "id": "THREE_WAY_HANDSHAKE",
+  "initial": "INITIALIZING",
+  "states": {
+    "INITIALIZING": {
+      "on": {
+        "STARTED": {
+          "target": "LOADING_VARIABLES"
+        }
+      }
+    },
+    "SENDING SYN": {
+      "entry": "send (pkt)",
+      "on": {
+        "PACKET_SENT": {
+          "target": "LISTENING",
+          "actions": [
+            "assign (pkt) (pkt)",
+            "assign (queue) (queue)",
+            "assign (ack) (ack)",
+            "assign (syn/ack) (syn/ack)",
+            "assign (syn) (syn)"
+          ]
+        }
+      }
+    },
+    "LISTENING": {
+      "entry": [
+        "set (5) (timeout)",
+        "wait_packet_signal (queue timeout)"
+      ],
+      "on": {
+        "PACKET_AVAILABLE": {
+          "target": "GETTING_FLAGS",
+          "actions": [
+            "assign (queue) (queue)",
+            "assign (pkt) (pkt)",
+            "assign (ack) (ack)",
+            "assign (syn/ack) (syn/ack)",
+            "assign (syn) (syn)"
+          ]
+        },
+        "TIMEOUT": {
+          "target": "TIMEOUT ENDING"
+        }
+      }
+    },
+    "HANDLING_ACK": {
+      "entry": [
+        "pop (queue)",
+        "done ()"
+      ],
+      "on": {
+        "DONE": {
+          "target": "ENDING",
+          "actions": [
+            "assign (pkt) (pkt)",
+            "assign (queue) (queue)"
+          ]
+        }
+      }
+    },
+    "HANDLING_SYN_ACK": {
+      "entry": [
+        "set_TCP_automatic_packet_seq (pkt) (pkt)",
+        "set_TCP_automatic_packet_ack (pkt queue) (pkt)",
+        "set_TCP_flags (pkt ack) (pkt)",
+        "pop (queue)",
+        "send (pkt)"
+      ],
+      "on": {
+        "PACKET_SENT": {
+          "target": "ENDING",
+          "actions": [
+            "assign (pkt) (pkt)",
+            "assign (queue) (queue)"
+          ]
+        }
+      }
+    },
+    "LOADING_VARIABLES": {
+      "entry": [
+        "get_from_file (variables role) (role)",
+        "get_from_file (variables client) (client)",
+        "get_parameters (pkt queue)",
+        "get_from_file (variables syn/ack) (syn/ack)",
+        "get_from_file (variables ack) (ack)",
+        "get_from_file (variables syn) (syn)",
+        "done ()"
+      ],
+      "on": {
+        "DONE": [
+          {
+            "target": "SENDING SYN",
+            "cond": "equal (role client)",
+            "actions": [
+              "assign (pkt) (pkt)",
+              "assign (queue) (queue)",
+              "assign (ack) (ack)",
+              "assign (syn/ack) (syn/ack)",
+              "assign (syn) (syn)"
+            ]
+          },
+          {
+            "target": "LISTENING",
+            "cond": "equal(role server)",
+            "actions": "assign (ack) (ack)"
+          }
+        ]
+      }
+    },
+    "TIMEOUT ENDING": {
+      "entry": [
+        "set (TIMEOUT) (event)",
+        "return (event)"
+      ]
+    },
+    "ENDING": {
+      "entry": [
+        "set (DONE) (event)",
+        "return (event pkt)"
+      ]
+    },
+    "GETTING_FLAGS": {
+      "entry": [
+        "get_TCP_flags (queue) (flags)",
+        "set (TCP_PACKET_RECEIVED) (event)",
+        "trigger (event)"
+      ],
+      "on": {
+        "TCP_PACKET_RECEIVED": [
+          {
+            "target": "HANDLING_ACK",
+            "cond": "equal (flags ack)",
+            "actions": [
+              "assign (pkt) (pkt)",
+              "assign (queue) (queue)",
+              "assign (ack) (ack)",
+              "assign (syn/ack) (syn/ack)",
+              "assign (syn) (syn)"
+            ]
+          },
+          {
+            "target": "HANDLING_SYN_ACK",
+            "cond": "equal (flags syn/ack)",
+            "actions": [
+              "assign (pkt) (pkt)",
+              "assign (queue) (queue)",
+              "assign (ack) (ack)",
+              "assign (syn/ack) (syn/ack)",
+              "assign (syn) (syn)"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

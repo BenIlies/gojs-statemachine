@@ -33,15 +33,15 @@
               <!-- input parameters fields  -->
               <div style="flex-grow: 1" *ngFor="let item of [].constructor(e['input_args']); let j = index ">
                 <label>input {{j+1}}</label>
-                <input type="text" class="form-control" name="{{i+e['command']+e['input_parm'][j]}}"
-                  [(ngModel)]="e['input_parm'][j]">
+                <input type="text" class="form-control" name="{{'input'+i+e['pid']+e['input_parm'][j]}}"
+                  [(ngModel)]="data.entries[i]['input_parm'][j]">
               </div>
 
               <!-- output parameters fields  -->
               <div style="flex-grow: 1" *ngFor="let item of [].constructor(e['output_args']); let j = index ">
                 <label>output {{j+1}}</label>
-                <input type="text" class="form-control" name="{{i+e['command']+e['output_parm'][j]}}"
-                  [(ngModel)]="e['output_parm'][j]">
+                <input type="text" class="form-control" name="{{'output+i+e['pid']+e['output_parm'][j]}}"
+                  [(ngModel)]="data.entries[i]['output_parm'][j]">
               </div>
 
               <div style="flex-grow: 1">
@@ -165,7 +165,7 @@
                       <!-- input parms  -->
                       <div style="flex-grow: 0.5" *ngFor="let item of [].constructor(a['input_args']); let j = index ">
                         <label>input {{j+1}}</label>
-                        <input type="text" class="form-control" name="{{a['command']+a['input_parm'][j]}}"
+                        <input type="text" class="form-control" name="{{a['pid']+a['input_parm'][j]}}"
                           [(value)]="a['input_parm'][j]" [(ngModel)]="a['input_parm'][j]">
                       </div>
 

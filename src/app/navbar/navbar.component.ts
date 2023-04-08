@@ -8,7 +8,7 @@ import { ManagerService } from '../manager.service';
 })
 export class NavbarComponent implements OnInit {
   navbarOpen = false;
-  model: go.Model;
+  private model: go.Model;
   downloadJsonHref: any = ""
 
   toggleNavbar() {
@@ -19,11 +19,15 @@ export class NavbarComponent implements OnInit {
 
     this.ModelManager.model$.subscribe(
       data => {
-        this.model = data
+        this.set_model(data)
       });
 
    }
 
+  public set_model(model: any) {
+    this.model = model;
+
+  }
   ngOnInit(): void {
   }
 

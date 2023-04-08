@@ -53,6 +53,7 @@ export class AppComponent {
 
 
   select(n: number){
+    console.log(this.ModelManager.model_list[n].toJson())
     this.ModelManager.selectModel(this.ModelManager.model_list[n])
   }
 

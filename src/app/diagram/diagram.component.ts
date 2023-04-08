@@ -38,7 +38,7 @@ const entryTemplate =
     let output_pars = ""
     if (action['input_parm'].length >0 ){
       for (let parm of action['input_parm'] ){
-        console.log(parm)
+        // console.log(parm)
         input_pars = input_pars+" "+ parm
       }
       input_pars = "(" +input_pars.trim() + ")"

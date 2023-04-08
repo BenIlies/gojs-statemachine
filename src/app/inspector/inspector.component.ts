@@ -153,13 +153,17 @@ export class InspectorComponent implements OnInit {
   }
 
   action_selected(action_selected: any) {
-    let action = action_selected.value
-    action["input_parm"] = []
-    action["output_parm"] = []
-    action["pid"] = this.data.name + action["command"]
+    let action = structuredClone(action_selected.value)
+    console.log('length of actions:')
+    console.log( this.data.entries)
+    action["input_parm"] = new Array<string>(action['input_args']);
+    action["output_parm"] = new Array<string>(action['output_args']);
+    action["pid"] = this.data.name + action["command"]+ (this.data.entries.length +1).toString()
 
-    this.data.entries.push( action)
+    this.data.entries.push(action)
   }
+
+
 
   action_selected_for_exit(action_selected: any) {
     let action = structuredClone(action_selected.value)

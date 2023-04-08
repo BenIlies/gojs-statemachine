@@ -48,7 +48,7 @@ export class ManagerService {
     // this.fromJson("../assets/example.json").subscribe((model) => { this.model_list.push(model) })
     // this.fromJson("../assets/m2.json").subscribe((model) => { this.model_list.push(model) })
     // this.fromJson("../assets/m3.json").subscribe((model) => { this.model_list.push(model) })
-    // this.fromJson("../assets/m4.json").subscribe((model) => { this.model_list.push(model) })
+    this.fromJson("../assets/m4.json").subscribe((model) => { this.model_list.push(model) })
     this.fromJson("../assets/mainBK.json").subscribe((model) => { this.model_list.push(model) })
     this.fromJson("../assets/dns_request.json").subscribe((model) => { this.model_list.push(model) })
 
@@ -140,26 +140,26 @@ export class ManagerService {
   //   return JSON.stringify(json_obj);
   // }
 
-  flatten_functions(action: any){
+  flatten_functions(action: any) {
     // this method get state or event action and flatten it into the form "function_name (input_par1 input_par2 ..) (output_par1, ..) "
     let function_name = action['command']
     let input_pars = ""
     let output_pars = ""
-    if (action['input_parm'].length >0 ){
-      for (let parm of action['input_parm'] ){
+    if (action['input_parm'].length > 0) {
+      for (let parm of action['input_parm']) {
         console.log(parm)
-        input_pars = input_pars+" "+ parm
+        input_pars = input_pars + " " + parm
       }
-      input_pars = "(" +input_pars.trim() + ")"
+      input_pars = "(" + input_pars.trim() + ")"
     }
-    if (action['output_parm'].length >0 ){
-      for (let parm of action['output_parm'] ){
-        output_pars = output_pars+" "+ parm
+    if (action['output_parm'].length > 0) {
+      for (let parm of action['output_parm']) {
+        output_pars = output_pars + " " + parm
       }
-      output_pars = "(" +output_pars.trim() + ")"
+      output_pars = "(" + output_pars.trim() + ")"
     }
 
-    return function_name + " " + input_pars+" "+ output_pars
+    return function_name + " " + input_pars + " " + output_pars
   }
 
 
@@ -168,8 +168,8 @@ export class ManagerService {
     var model_data = JSON.parse(model.toJson())
     // let json_obj = {states: new Array<any>()}
     var json_obj = { states: {} }
-    json_obj['id'] = model_data["name"]
-
+    json_obj["id"] = model_data["name"]
+    json_obj["initial"] = "INITIALIZING"
 
     for (let item of model_data["nodeDataArray"]) {
       let entries = []
@@ -256,19 +256,19 @@ export class ManagerService {
               let output_parm = atrib['output_parm']
               let output_args = atrib['output_args']
 
-              entries.push({ name: command, command: command, input_parm: input_parm, input_args: input_args, output_parm: output_parm, output_args: output_args})
+              entries.push({ name: command, command: command, input_parm: input_parm, input_args: input_args, output_parm: output_parm, output_args: output_args })
             }
           }
           else {
             // extract the function and the attrib
-            let atrib = this.parse_function(json_data[key]["entry"]["entry"])
+            let atrib = this.parse_function(json_data[key]["entry"])
             let command = atrib['command']
             let input_parm = atrib['input_parm']
             let input_args = atrib['input_args']
             let output_parm = atrib['output_parm']
             let output_args = atrib['output_args']
 
-            entries.push({ name: command, command: command, input_parm: input_parm, input_args: input_args, output_parm: output_parm, output_args: output_args})
+            entries.push({ name: command, command: command, input_parm: input_parm, input_args: input_args, output_parm: output_parm, output_args: output_args })
           }
         }
 
@@ -287,7 +287,7 @@ export class ManagerService {
               let output_args = atrib['output_args']
               // for each action extract func and attrib
 
-              _exit.push({ name: command, command: command, input_parm: input_parm, input_args: input_args, output_parm: output_parm, output_args: output_args})
+              _exit.push({ name: command, command: command, input_parm: input_parm, input_args: input_args, output_parm: output_parm, output_args: output_args })
             }
           }
           else {
@@ -299,7 +299,7 @@ export class ManagerService {
             let output_args = atrib['output_args']
             // for each action extract func and attrib
 
-            _exit.push({ name: command, command: command, input_parm: input_parm, input_args: input_args, output_parm: output_parm, output_args: output_args})
+            _exit.push({ name: command, command: command, input_parm: input_parm, input_args: input_args, output_parm: output_parm, output_args: output_args })
           }
         }
 
@@ -419,30 +419,35 @@ export class ManagerService {
 
 
   parse_function(txt: string) {
-    console.log("trying txt");
-    console.log(txt)
-    let init = txt.indexOf('(');
-    let fin = txt.indexOf(')');
-    if (init>1) {
-      let func = txt.substring(0, init - 1).trim();
-      // getting input ()
-      let input = txt.substring(init+1,fin)
-      // get output sub text ()
-      let output = txt.substring(fin+1)
-      init = output.indexOf('(');
-      fin = output.indexOf(')');
-      output = output.substring(init+1,fin)
-      let input_parm = input.split(/(\s+)/).filter( function(e) { return e.trim().length > 0; } );
-      let output_parm = output.split(/(\s+)/).filter( function(e) { return e.trim().length > 0; } );
+    if (typeof(txt) != "undefined") {
+      console.log("trying txt");
+      console.log(txt)
+      let init = txt.indexOf('(');
+      let fin = txt.indexOf(')');
+      if (init > 1) {
+        let func = txt.substring(0, init - 1).trim();
+        // getting input ()
+        let input = txt.substring(init + 1, fin)
+        // get output sub text ()
+        let output = txt.substring(fin + 1)
+        init = output.indexOf('(');
+        fin = output.indexOf(')');
+        output = output.substring(init + 1, fin)
+        let input_parm = input.split(/(\s+)/).filter(function (e) { return e.trim().length > 0; });
+        let output_parm = output.split(/(\s+)/).filter(function (e) { return e.trim().length > 0; });
 
-      console.log({ command: func, input_parm: input_parm , input_args: input_parm.length, output_parm: output_parm , output_args: output_parm.length})
+        console.log({ command: func, input_parm: input_parm, input_args: input_parm.length, output_parm: output_parm, output_args: output_parm.length })
 
 
-      return { command: func, input_parm: input_parm , input_args: input_parm.length, output_parm: output_parm , output_args: output_parm.length}
+        return { command: func, input_parm: input_parm, input_args: input_parm.length, output_parm: output_parm, output_args: output_parm.length }
+      }
+      else {
+        let func = txt.trim();
+        return { command: func, input_parm: [], input_args: 0, output_parm: [], output_args: 0 }
+      }
     }
-    else{
-      let func = txt.trim();
-      return { command: func, input_parm: [] , input_args: 0, output_parm: [] , output_args: 0}
+    else {
+      return { command: txt, input_parm: [], input_args: 0, output_parm: [], output_args: 0 }
     }
   }
 
@@ -455,7 +460,7 @@ export class ManagerService {
           results.push(this.parse_function(a))
         }
       }
-      else{
+      else {
         results.push(this.parse_function(actions))
       }
     }
