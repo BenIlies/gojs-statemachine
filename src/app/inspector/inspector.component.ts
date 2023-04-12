@@ -3,6 +3,7 @@ import { Component, Inject, Input, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ManagerService } from '../manager.service';
 import { HttpClient } from '@angular/common/http';
+import { Model } from 'gojs';
 
 
 
@@ -48,13 +49,7 @@ export class InspectorComponent implements OnInit {
         this.model = data
       });
 
-  }
-
-
-  ngOnInit(): void {
-
-
-    this.ModelManager.node$.subscribe(
+       this.ModelManager.node$.subscribe(
 
       data => {
         // console.log(data)
@@ -63,6 +58,7 @@ export class InspectorComponent implements OnInit {
 
         } else {
           this.show = true
+          console.log(data)
           this.node = data
           this.data.name = this.node.data.name
           this.data.category = this.node.data.category
@@ -80,6 +76,38 @@ export class InspectorComponent implements OnInit {
 
         }
       });
+
+  }
+
+
+  ngOnInit(): void {
+
+    // this.ModelManager.node$.subscribe(
+
+    //   data => {
+    //     // console.log(data)
+    //     if (data == null) {
+    //       this.show = false
+
+    //     } else {
+    //       this.show = true
+    //       this.node = data
+    //       this.data.name = this.node.data.name
+    //       this.data.category = this.node.data.category
+    //       this.data.events = Object.assign([], this.node.data.events); //deep copy otherwise it cuase issues
+    //       this.data.entries = Object.assign([], this.node.data.entries);
+    //       this.data.exit = Object.assign([], this.node.data.exit);
+    //       this.data.loc = this.node.data.loc
+    //       if (this.data.category == "event") {
+    //         this.input_type = "event"
+    //       }
+    //       if (this.data.category == "state") {
+    //         this.input_type = "entry action"
+
+    //       }
+
+    //     }
+    //   });
 
     this.getJSON("../assets/attributes.json").subscribe((data) => {
       this.actions = data['actions']

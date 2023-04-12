@@ -8,51 +8,30 @@ import { ManagerService } from '../manager.service';
 
 const $ = go.GraphObject.make;
 
-const entryTemplate =
-  $(go.Panel, "Auto",
-    $(go.Shape,
-      {
-        fill: "lightblue",
-        strokeWidth: 0.5,
-        fromLinkable: true,
-        fromLinkableDuplicates: true,
-        fromSpot: go.Spot.RightSide,
-        cursor: "pointer"
-      },
-      new go.Binding("portId", "pid")
-    ),
-    $(go.TextBlock,
-      {
-        margin: new go.Margin(4, 4, 2, 4),
-        isMultiline: false,
-        editable: true
-      },
-      new go.Binding("text", "name").makeTwoWay()
-    )
-  );
-
-
-  function flatten_function_args(action: any){
-    let function_name = action['command']
-    let input_pars = ""
-    let output_pars = ""
-    if (action['input_parm'].length >0 ){
-      for (let parm of action['input_parm'] ){
-        // console.log(parm)
-        input_pars = input_pars+" "+ parm
-      }
-      input_pars = "(" +input_pars.trim() + ")"
+// this function is used to parse functions from json format and display it
+// in this format:  function_name (input1, input2, ...) (output1, output2, ...)
+// keepting this funciton outside the component because of
+// refrencing issues when called in gojs template
+function flatten_function_args(action: any){
+  let function_name = action['command']
+  let input_pars = ""
+  let output_pars = ""
+  if (action['input_parm'].length >0 ){
+    for (let parm of action['input_parm'] ){
+      // console.log(parm)
+      input_pars = input_pars+" "+ parm
     }
-    if (action['output_parm'].length >0 ){
-      for (let parm of action['output_parm'] ){
-        output_pars = output_pars+" "+ parm
-      }
-      output_pars = "(" +output_pars.trim() + ")"
+    input_pars = "(" +input_pars.trim() + ")"
+  }
+  if (action['output_parm'].length >0 ){
+    for (let parm of action['output_parm'] ){
+      output_pars = output_pars+" "+ parm
     }
-
-    return function_name + " " + input_pars+" "+ output_pars
+    output_pars = "(" +output_pars.trim() + ")"
   }
 
+  return function_name + " " + input_pars+" "+ output_pars
+}
 
 
 @Component({
@@ -69,8 +48,12 @@ export class DiagramComponent implements OnInit {
   public model: go.Model | null = null;
 
   public set_model(model: any) {
+    // these steps are important so when we copy to another model we don't
+    // edit the same object
+    model.copiesKey= false
+    model.copiesArrayObjects = true;
+    model.copiesArrays = true;
     this.diagram.model = model;
-
   }
 
   @Output()
@@ -164,6 +147,8 @@ export class DiagramComponent implements OnInit {
 
   }
 
+
+
   // some constants that will be reused within templates
   roundedRectangleParams = {
     parameter1: 2,  // set the rounded corner
@@ -196,8 +181,6 @@ export class DiagramComponent implements OnInit {
 
     );
 
-
-
   actionTemplate =
     $(go.Panel, "Auto",
       $(go.Shape,
@@ -214,8 +197,7 @@ export class DiagramComponent implements OnInit {
         },
         new go.Binding("text", "", function(data) {return flatten_function_args(data)})
       )
-    )
-    ;
+    );
 
   eventTemplate =
     $(go.Panel, "Auto",
@@ -259,6 +241,30 @@ export class DiagramComponent implements OnInit {
       )
     );
 
+    entryTemplate =
+    $(go.Panel, "Auto",
+      $(go.Shape,
+        {
+          fill: "lightblue",
+          strokeWidth: 0.5,
+          fromLinkable: true,
+          fromLinkableDuplicates: true,
+          fromSpot: go.Spot.RightSide,
+          cursor: "pointer"
+        },
+        new go.Binding("portId", "pid")
+      ),
+      $(go.TextBlock,
+        {
+          margin: new go.Margin(4, 4, 2, 4),
+          isMultiline: false,
+          editable: true
+        },
+        new go.Binding("text", "name").makeTwoWay()
+      )
+    );
+
+
 
   public ngAfterViewInit(): void {
     this.diagram = $(go.Diagram, 'myDiagramDiv',
@@ -266,18 +272,15 @@ export class DiagramComponent implements OnInit {
         "linkingTool.direction": go.LinkingTool.ForwardsOnly,
         "draggingTool.isGridSnapEnabled": true,
         "undoManager.isEnabled": true,
-
         layout: new go.LayeredDigraphLayout()
       });
-
-
 
     // only allow new links between ports of the same color
     this.diagram.toolManager.linkingTool.linkValidation = this.sameColor;
 
     // only allow reconnecting an existing link to a port of the same color
     this.diagram.toolManager.relinkingTool.linkValidation = this.sameColor;
-
+    // making sure the copied nodes do not copy keys
     this.diagram.requestUpdate();
 
     let default_node_temp =
@@ -453,10 +456,6 @@ export class DiagramComponent implements OnInit {
       ); // end Adornment
 
 
-
-
-
-
     // create the nodeTemplateMap, holding three node templates:
     let templmap = new go.Map<string, go.Node>(); // In TypeScript you could write: new go.Map<string, go.Node>();
     // for each of the node categories, specify which template to use
@@ -467,7 +466,6 @@ export class DiagramComponent implements OnInit {
     // this just shows the key value as a simple TextBlock
     default_node_temp.selectionAdornmentTemplate = select_abn_temp;
     event_node_temp.selectionAdornmentTemplate = select_abn_temp;
-
     templmap.add("", <go.Node>this.diagram.nodeTemplate);
 
     this.diagram.nodeTemplateMap = templmap;
@@ -488,76 +486,6 @@ export class DiagramComponent implements OnInit {
         $(go.Shape, { strokeWidth: 2 }),
         $(go.Shape, { toArrow: "Standard" })
       );
-    //  // define the Node template
-    //  this.diagram.nodeTemplate =
-    //  $(go.Node, 'Auto',
-    //    // for sorting, have the Node.text be the data.name
-    //    new go.Binding('text', 'name'),
-    //    // bind the Part.layerName to control the Node's layer depending on whether it isSelected
-    //    new go.Binding('layerName', 'isSelected', function(sel) { return sel ? 'Foreground' : ''; }).ofObject(),
-    //    // define the node's outer shape
-    //    $(go.Shape, 'Rectangle',
-    //      {
-    //        name: 'SHAPE', fill: 'lightblue', stroke: null,
-    //        // set the port properties:
-    //        portId: '', fromLinkable: true, toLinkable: true, cursor: 'pointer'
-    //      },
-    //      new go.Binding('fill', '', function(node) {
-    //        // modify the fill based on the tree depth level
-    //        const levelColors = ['#AC193D', '#2672EC', '#8C0095', '#5133AB',
-    //          '#008299', '#D24726', '#008A00', '#094AB2'];
-    //        let color = node.findObject('SHAPE').fill;
-    //        const dia: go.Diagram = node.diagram;
-
-    //        return color;
-    //      }).ofObject()
-    //    ),
-    //    $(go.Panel, 'Horizontal',
-    //      $(go.Picture,
-    //        {
-    //          name: 'Picture',
-    //          desiredSize: new go.Size(39, 50),
-    //          margin: new go.Margin(6, 8, 6, 10)
-    //        },
-    //        new go.Binding('source', 'key', function(key) {
-    //          if (key < 0 || key > 16) return ''; // There are only 16 images on the server
-    //          return 'assets/HS' + key + '.png';
-    //        })
-    //      ),
-    //      // define the panel where the text will appear
-    //      $(go.Panel, 'Table',
-    //        {
-    //          maxSize: new go.Size(150, 999),
-    //          margin: new go.Margin(6, 10, 0, 3),
-    //          defaultAlignment: go.Spot.Left
-    //        },
-    //        $(go.RowColumnDefinition, { column: 2, width: 4 }),
-    //        $(go.TextBlock, { font: '9pt  Segoe UI,sans-serif', stroke: 'white' },  // the name
-    //          {
-    //            row: 0, column: 0, columnSpan: 5,
-    //            font: '12pt Segoe UI,sans-serif',
-    //            editable: true, isMultiline: false,
-    //            minSize: new go.Size(10, 16)
-    //          },
-    //          new go.Binding('text', 'name').makeTwoWay()),
-    //        $(go.TextBlock, 'type: ', { font: '9pt  Segoe UI,sans-serif', stroke: 'white' },
-    //          { row: 1, column: 0 }),
-    //        $(go.TextBlock, { font: '9pt  Segoe UI,sans-serif', stroke: 'white' },
-    //          {
-    //            row: 1, column: 1, columnSpan: 4,
-    //            editable: true, isMultiline: false,
-    //            minSize: new go.Size(10, 14),
-    //            margin: new go.Margin(0, 0, 0, 3)
-    //          },
-    //          new go.Binding('text', 'type').makeTwoWay()),
-    //        $(go.TextBlock, { font: '9pt  Segoe UI,sans-serif', stroke: 'white' },
-    //          { row: 2, column: 0 },
-    //          new go.Binding('text', 'key', function(v) { return 'ID: ' + v; })),
-
-    //      )  // end Table Panel
-    //    ) // end Horizontal Panel
-    //  );  // end Node
-
 
     if (this.diagram !== null) {
 
@@ -572,11 +500,7 @@ export class DiagramComponent implements OnInit {
       }
     });
 
-
   }
-
-
-
 
   sameColor(fromnode: { data: { category: string; }; }, _fromport: any, tonode: { data: { category: string; }; }, toport: any) {
     return (fromnode.data.category == "state" && tonode.data.category == "event") || (fromnode.data.category == "event" && tonode.data.category == "state");
@@ -585,8 +509,6 @@ export class DiagramComponent implements OnInit {
     // and that there is a data Binding on the Shape.fill
   }
 
-
-
   nodeStyle() {
     return [
       new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify),
@@ -594,164 +516,33 @@ export class DiagramComponent implements OnInit {
     ]
   }
 
-  // Show the diagram's model in JSON format
+  // Show the diagram's model in JSON format DEBUG purposes
   save() {
     if (this.diagram != null) {
       // console.log(this.diagram.model.toJson())
       this.document.getElementById("jsonViewer").value = this.ModelManager.to_json(this.diagram.model.toJson());
       this.diagram.isModified = false;
     }
-
   }
-
+  // DEBUG purposes:
   saveGojs() {
     if (this.diagram != null) {
       // console.log(this.diagram.model.toJson())
       this.document.getElementById("gojsViewer").value = this.diagram.model.toJson();
       this.diagram.isModified = false;
     }
-
   }
 
-
+ // loading from json viewer for  DEBUGGING too
   load() {
     if (this.diagram != null) {
       this.diagram.model = go.Model.fromJson(this.document.getElementById("jsonViewer").value);
 
     }
   }
-
-  // to_json(model_data: any){
-  //   // return model_data
-  //   model_data = JSON.parse(model_data)
-  //   // let json_obj = {states: new Array<any>()}
-  //   let json_obj = {states: {}}
-
-
-  //   for (let item of model_data["nodeDataArray"]){
-  //     let entries = []
-  //     if (item['category'] == 'state'){
-
-  //       console.log("entriees")
-
-  //       for (let e of item['entries']){
-  //       console.log(e['name'])
-
-  //         entries.push(e["name"])
-  //       }
-  //       json_obj.states[item['name']] = {entry: entries, on: {}}
-  //     }
-  //   }
-  //   for (let item of model_data["nodeDataArray"]){
-  //     if (item['category'] == 'event'){
-  //       json_obj.states[item['parent']]["on"][item['name']] = {}
-  //     }
-  //   }
-  //   for (let item of model_data["linkDataArray"]){
-  //     if(json_obj.states[item['to']] ){
-  //       if(item['pid'] == 'default'){
-  //         json_obj.states[item['parent']]["on"][item['name']] = {target: item['to']}
-  //       }else{
-  //         let source_node = this.model!.findNodeDataForKey(item['from'])
-  //         console.log("source_node")
-  //         let temp_cond = ""
-  //         for (let e of source_node!['events']){
-  //           console.log(e)
-
-  //           if (e!['pid'] == item['pid']){
-  //             temp_cond = e['name']
-  //           }
-
-  //         }
-  //         if(Object.prototype.toString.call(json_obj.states[item['parent']]["on"][item['name']]) === '[object Array]') {
-  //           json_obj.states[item['parent']]["on"][item['name']].push(
-  //             {cond: temp_cond, target: item['to']}
-  //             )
-  //         }
-  //         else {
-  //           json_obj.states[item['parent']]["on"][item['name']]=[{cond: temp_cond, target: item['to']}]
-  //         }
-
-  //       }
-  //     }
-
-  //   }
-  //   return JSON.stringify(json_obj, null, 2);
-  // }
-
   public getJSON(file: string): Observable<any> {
     return this.http.get(file);
   }
-
-  // public fromJson() {
-  //   var mynodeDataArray:any = []
-  //   var mynodeLinkArray:any = []
-  //   this.getJSON("../assets/example.json").subscribe(data => {
-  //     // console.log(data);
-  //     let json_data = data['states']
-
-  //     for (var key in json_data) {
-  //       // json_node =
-  //       // console.log(key)
-  //       let entries = []
-  //       if(Object.prototype.toString.call(json_data[key]["entry"]) === '[object Array]') {
-  //         for (let e in json_data[key]["entry"]){
-  //           entries.push({name: json_data[key]["entry"][e]})
-  //         }
-  //       }
-  //       else{
-  //         entries.push({name: json_data[key]["entry"]})
-  //       }
-
-  //       let temp_node = { key: key, name: key, category: "state", entries: entries}
-  //       mynodeDataArray.push(temp_node)
-
-  //       for (var event in json_data[key]["on"]) {
-  //         let temp_node = { key: key+'_'+event, name: event, category: "event", parent: key, events: new Array<any>(), entries: []}
-  //         let new_link = {"from":key,"to":key+'_'+event,"pid":"a"};
-  //       // console.log(json_data[key]["on"][event])
-  //         let conditions = json_data[key]["on"][event];
-  //         if(Object.prototype.toString.call(conditions) === '[object Array]') {
-  //           for (let cond of conditions) {
-  //             temp_node.events.push({pid:cond['cond'], name:cond['cond']})
-  //             let new_link = {"from":key+'_'+event,"to":cond['target'], "pid":cond['cond'], parent: key, name:event};
-  //             mynodeLinkArray.push(new_link)
-  //           }
-  //         }
-  //         else {
-  //           temp_node.events.push({pid:"default", name:"defult"})
-  //           let new_link = {"from":key+'_'+event,"to":conditions['target'], "pid":"default", parent: key, name:event};
-  //           mynodeLinkArray.push(new_link)
-  //         }
-
-  //         mynodeLinkArray.push(new_link)
-  //         mynodeDataArray.push(temp_node)
-
-
-  //       }
-  //     }
-
-  //     // console.log(mynodeDataArray)
-  //     this.model = new go.GraphLinksModel(
-  //       {
-  //         linkFromPortIdProperty: "pid",  // required information:
-  //         // identifies data property names
-  //         nodeDataArray: mynodeDataArray,
-  //         linkDataArray: mynodeLinkArray
-  //       }
-  //     );
-
-  //     this.set_model(this.model)
-  //     this.modelChanges.emit(this.model)
-  //   });
-
-
-
-
-
-  // }
-
-
 
 
 }
