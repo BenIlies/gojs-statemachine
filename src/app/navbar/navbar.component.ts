@@ -42,22 +42,10 @@ export class NavbarComponent implements OnInit {
     var myWindow = window.open("data:text/json", '_blank');
     myWindow!.document.write('<html><body><pre>' + jsonPretty + '</pre></body></html>');
 
-      // setTimeout(() => window.URL.revokeObjectURL(data), 100);
-
-  //   var sJson = this.ModelManager.to_json(this.model.toJson());
-  //   //     var myWindow = window.open("", '_blank');
-  //   //     myWindow!.document.write(sJson);
-  //   var element = document.createElement('a');
-  //   element.setAttribute('href', "data:text/json;charset=UTF-8," + encodeURIComponent(sJson));
-  //   element.setAttribute('download', "primer-server-task.json");
-  //   element.style.display = 'none';
-  //   document.body.appendChild(element);
-  //   element.click(); // simulate click
-  //   document.body.removeChild(element);
-
   }
 
   generateDownloadJsonUri() {
+    // this function is testing for download link (not functional yet!)
     var theJSON = this.ModelManager.to_json(this.model.toJson())
     var uri = this.sanitizer.bypassSecurityTrustUrl("data:text/json," + encodeURIComponent(theJSON));
     this.downloadJsonHref = uri;

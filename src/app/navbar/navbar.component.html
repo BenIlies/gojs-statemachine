@@ -13,20 +13,11 @@
 
   <div class="collapse navbar-collapse" [ngClass]="{ 'show': navbarOpen }">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item">
-        <a class="nav-link" >Save</a>
-      </li>
+
 
       <li class="nav-item">
         <a class="nav-link" (click)="export()">Open JSON in new tab</a>
       </li>
-
-
-
-      <li class="nav-item">
-        <a class="nav-link" title="Download JSON" [href]="downloadJsonHref" download="download.json">Download JSON</a>
-      </li>
-
 
     </ul>
 
@@ -34,5 +25,3 @@
 
   </div>
 </nav>
-
-

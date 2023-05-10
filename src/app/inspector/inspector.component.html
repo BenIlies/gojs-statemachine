@@ -1,5 +1,14 @@
 <div *ngIf="show" class="container"
-  style="background-color: rgb(247, 249, 252); float: left; margin-left: 15px; height: 600px; width: 500px; position: absolute; right: 10px; top: 10px;  z-index: 10; overflow: scroll; padding-top: 15px;">
+  style="background-color: rgb(247, 249, 252); float: left; margin-left: 15px; height: 600px; width: 500px;
+  position: absolute; right: 10px; top: 10px;  z-index: 10;
+  overflow: scroll; padding-top: 15px;
+  padding-bottom: 10px;">
+
+  <mat-icon (click)="show=!show" style="float: right;" aria-hidden="false" aria-label="Example home icon"
+    fontIcon="close">close</mat-icon>
+  <br>
+  <br>
+
 
   <form (ngSubmit)="onCommitForm()">
     <div class="form-group">
@@ -9,8 +18,8 @@
       <label>type</label>
       <input type="text" class="form-control" name="category" placeholder="Enter Name" [(ngModel)]="data.category">
       <br>
-      <label>location</label>
-      <input type="text" class="form-control" name="location" placeholder="Enter location" [(ngModel)]="data.loc">
+      <!-- <label>location</label>
+      <input type="text" class="form-control" name="location" placeholder="Enter location" [(ngModel)]="data.loc"> -->
 
     </div>
     <br>
@@ -222,12 +231,14 @@
 
     </div>
     <br>
-    <button type="submit" class="btn btn-primary">Submit</button>
-  </form>
+    <button  type="submit" class="btn btn-primary">Submit</button>
 
+
+  </form>
+  <!-- for debuging only(show the data of the model):
   <div>
 
     {{this.data | json}}
-  </div>
+  </div> -->
 
 </div>

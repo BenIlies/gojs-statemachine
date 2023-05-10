@@ -93,12 +93,14 @@ export class DiagramComponent implements OnInit {
     // create a new "State" data object, positioned off to the right of the adorned Node
     let node_category = "state"
     let node_label = "New State"
+
     if (fromData.category == "state") {
 
       node_category = "event"
       node_label = "New Event"
     }
-    var toData = { name: node_label, loc: "", category: node_category, events: [], entries: [], exit:[] };
+    var toData = { name: node_label, loc: "", category: node_category, events: [{ pid: "default", name: "defult", command: 'default', input_parm: [], input_args: 0, output_parm: [], output_args: 0, actions: [] }], entries: [], exit:[] };
+
     var p = fromNode.location.copy();
     p.x += 200;
     toData.loc = go.Point.stringify(p);  // the "loc" property is a string, not a Point object
@@ -475,12 +477,15 @@ export class DiagramComponent implements OnInit {
     this.diagram.linkTemplate =
       $(go.Link,
         {
-          curve: go.Link.Bezier,
           fromEndSegmentLength: 30,
           toEndSegmentLength: 50,
           reshapable: true,
           relinkableFrom: true,
-          relinkableTo: true
+          relinkableTo: true,
+          routing: go.Link.AvoidsNodes,
+          // routing: go.Link.Orthogonal,  // may be either Orthogonal or AvoidsNodes
+           curve: go.Link.JumpGap,
+          corner: 10
         },
         // new go.Binding("toSpot", "fromNode", n => n.name === "Start" ? go.Spot.None : go.Spot.Default).ofObject(),
         $(go.Shape, { strokeWidth: 2 }),
