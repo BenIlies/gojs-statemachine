@@ -121,6 +121,9 @@ export class InspectorComponent implements OnInit {
 
   }
 
+  // this function updates the data model
+  // with the values entered in the form and
+  // saves the changes as a single transaction.
   onCommitForm() {
 
     this.model.startTransaction();

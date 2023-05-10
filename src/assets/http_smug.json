@@ -1,0 +1,61 @@
+{
+  "id": "http_smuggling_test",
+  "initial": "INITIALIZATION",
+  "states": {
+    "INITIALIZATION": {
+      "on": {
+        "STARTED": {
+          "target": "SETTING_UP_VARIABLES"
+        }
+      }
+    },
+    "SETTING_UP_VARIABLES": {
+      "entry": ["call (SETTING_UP_VARIABLES) (event pkt queue)", "trigger (event)"],
+      "on": {
+        "DONE": {
+          "target": "Second State",
+          "actions": ["assign (pkt) (pkt)", "assign (queue) (queue)"]
+        }
+      }
+    },
+    "Second State": {
+      "entry": ["call (THREE_WAY_HANDSHAKE pkt queue) (event pkt queue)", "trigger (event)"],
+      "on": {
+        "DONE": {
+          "target": "LISTENING",
+          "actions": ["assign (pkt) (pkt)", "assign (queue) (queue)"]
+        }
+      }
+    },
+    "LISTENING": {
+      "entry": [
+        "set (50) (timeout)",
+        "get_from_file (variables msg) (msg)",
+        "wait_packet_signal (queue timeout)"
+      ],
+      "on": {
+        "PACKET_AVAILABLE": {
+          "target": "HTTP_PARSE",
+          "actions": ["assign (queue) (queue)", "assign (msg) (msg)"]
+        }
+      }
+    },
+    "HTTP_PARSE": {
+      "entry": ["wait_HTTP_headers (queue msg) (msg event)", "pop (queue)", "trigger (event)"],
+      "on": {
+        "MESSAGE_INCOMPLETE": {
+          "target": "HTTP_PARSE",
+          "actions": ["assign (msg) (msg)", "assign (queue) (queue)"],
+          "internal": false
+        },
+        "MESSAGE_COMPLETE": {
+          "target": "ENDING",
+          "actions": "assign (queue) (queue)"
+        }
+      }
+    },
+    "ENDING": {
+      "entry": "set (\"HEADER_MUTATED\") (event)"
+    }
+  }
+}
