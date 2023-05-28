@@ -99,7 +99,7 @@ export class DiagramComponent implements OnInit {
       node_category = "event"
       node_label = "New Event"
     }
-    var toData = { name: node_label, loc: "", category: node_category, events: [{ pid: "default", name: "defult", command: 'default', input_parm: [], input_args: 0, output_parm: [], output_args: 0, actions: [] }], entries: [], exit:[] };
+    var toData = { name: node_label, loc: "", category: node_category, events: [{ pid: "default", name: "defult", command: 'default', input_parm: [], input_args: 0, output_parm: [], output_args: 0, actions: [] }], entries: [], exit:[], parent: fromData['name'] };
 
     var p = fromNode.location.copy();
     p.x += 200;

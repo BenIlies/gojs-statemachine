@@ -316,7 +316,7 @@ export class ManagerService {
         name: name,
         linkFromPortIdProperty: "pid",
         nodeDataArray: [
-          { name: "START", category: "state", entries: [], exit: [] },
+          { name: "INITIALIZATION", category: "state", entries: [], exit: [] },
         ],
         linkDataArray: [
         ]
