@@ -29,6 +29,13 @@
           "optional_outputs": false
       },
       {
+        "command": "create_UDP_packet",
+        "input_args": 0,
+        "output_args": 1,
+        "optional_inputs": false,
+        "optional_outputs": false
+      },
+      {
           "command": "set_random_int",
           "input_args": 2,
           "output_args": 1,
@@ -70,6 +77,20 @@
           "optional_inputs": false,
           "optional_outputs": false
       },
+      {
+        "command": "set_UDP_sport",
+        "input_args": 2,
+        "output_args": 1,
+        "optional_inputs": false,
+        "optional_outputs": false
+    },
+    {
+        "command": "set_UDP_dport",
+        "input_args": 2,
+        "output_args": 1,
+        "optional_inputs": false,
+        "optional_outputs": false
+    },
       {
           "command": "set_TCP_seq",
           "input_args": 2,
